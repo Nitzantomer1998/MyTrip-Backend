@@ -4,6 +4,11 @@ const bodyParser = require('body-parser');
 
 app.use(bodyParser.json());
 
+app.get('/api'),
+  (req, res) => {
+    console.log('Here');
+  };
+
 app.post('/api/login', (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
