@@ -1,8 +1,14 @@
 const express = require("express");
-const app = express();
-const bodyParser = require("body-parser");
+const cors = require("cors");
 
-app.use(bodyParser.json());
+const PORT = 3001;
+const app = express();
+
+app.use(cors());
+
+app.get("/", (req, res) => {
+  console.log("Hey");
+});
 
 app.get("/api"),
   (req, res) => {
@@ -12,8 +18,6 @@ app.get("/api"),
 app.post("/api/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  // Here you can add your own authentication logic.
-  // For example, you can query a database to see if the email and password match a user record.
 
   if (email === "example@gmail.com" && password === "password123") {
     res.json({ valid: true });
@@ -22,20 +26,11 @@ app.post("/api/login", (req, res) => {
   }
 });
 
-// Define the API endpoint for handling sign-up submissions
 app.post("/api/register", (req, res) => {
   const { name, email, password } = req.body;
-
-  // Perform any necessary validation on the form data
-  // ...
-
-  // If the form data is valid, save the user to the database
-  // ...
-
-  // Return a response indicating success or failure
   res.json({ success: true });
 });
 
-app.listen(5000, () => {
-  console.log("Server start at port 5000");
+app.listen(PORT, () => {
+  console.log(`Server has started on port: ${PORT}`);
 });
