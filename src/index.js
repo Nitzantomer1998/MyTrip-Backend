@@ -4,6 +4,11 @@ const bodyParser = require("body-parser");
 
 app.use(bodyParser.json());
 
+app.get("/", (req, res) => {
+  console.log("Got a request");
+  res.send(JSON.stringify("<h3>Hi From Backend API</h3>"));
+  return res;
+});
 app.get("/api"),
   (req, res) => {
     console.log("Here");
