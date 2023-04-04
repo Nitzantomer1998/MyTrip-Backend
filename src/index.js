@@ -8,6 +8,6 @@ APP.get("/", (req, res) => {
   res.send("Hello from the server main page");
 });
 
-APP.listen(port, () => {
+APP.listen(PORT, () => {
   console.log(`server is up and running at port --> ${PORT}`);
 });

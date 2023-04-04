@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "Fullstack training",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "run": "node src/index.js",
+    "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "lint": "eslint src/*.js --color",
     "test": "mocha tests/*.spec.js --color"
