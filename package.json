@@ -27,6 +27,8 @@
     "@types/chai": "^4.3.4",
     "@types/mocha": "^10.0.1",
     "chai": "^4.3.7",
+    "eslint": "^8.37.0",
+    "eslint-config-google": "^0.14.0",
     "mocha": "^10.2.0",
     "nodemon": "^2.0.22"
   }
