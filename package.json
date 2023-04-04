@@ -4,9 +4,10 @@
   "description": "Fullstack training",
   "main": "index.js",
   "scripts": {
-    "run": "node run src/index.js",
-    "dev": "nodemon run src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "run": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "lint": "eslint src/*.js --color",
+    "test": "mocha tests/*.spec.js --color"
   },
   "repository": {
     "type": "git",
