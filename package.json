@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Nitzantomer1998/PM-Backend/issues"
   },
-  "homepage": "https://github.com/Nitzantomer1998/PM-Backend#readme"
+  "homepage": "https://github.com/Nitzantomer1998/PM-Backend#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
