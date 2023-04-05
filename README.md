@@ -68,7 +68,7 @@ The tree below displays the main files and folders structure.
 ## Authors
 
 * Gad Nadjar
-* Nitsan Tomer
+* Nitzan Tomer
 * Zaccharie Attias
 * Guy Shabtay
 * Rudy Haddad
