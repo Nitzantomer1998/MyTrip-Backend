@@ -24,7 +24,7 @@ Make sure you have installed all of the following prerequisites on your developm
 ## Technologies
 Project is created with:
 * visual studio code
-* node.js 16.14.0
+* node.js 18.15.0
 	
 ## Installation
 * Open a folder for this project and clone this repository by writing the following command in command-line:
