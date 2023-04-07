@@ -21,7 +21,8 @@
   },
   "homepage": "https://github.com/Nitzantomer1998/PM-Backend#readme",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "mongoose": "^7.0.3"
   },
   "devDependencies": {
     "@types/chai": "^4.3.4",
