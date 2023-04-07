@@ -3,19 +3,19 @@ import mongoose from 'mongoose';
 const registerSchema = mongoose.Schema(
   {
     email: {
-      type: email,
-      require,
+      type: String,
+      required: true,
     },
     password: {
       type: String,
-      require,
+      required: true,
     },
   },
   {
-    timestamp: true,
+    timestamps: true,
   }
 );
 
 const Register = mongoose.model('Register', registerSchema);
 
-module.exports = Register;
+export default Register;

@@ -1,30 +1,41 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import Register from './models/registerModel.js';
 
-const PORT = process.env.port || 3001;
-const APP = express();
+const PORT = process.env.PORT || 3001;
+const app = express();
 
-APP.use(express.json());
+app.use(express.json());
 
-APP.get('/', (req, res) => {
+app.get('/', (req, res) => {
   console.log('A new request has arrived to index.js');
   res.send('Hello from the server main page');
 });
 
-APP.post('/register', (req, res) => {
-  console.log(req.body);
-  res.send(req.body);
+app.post('/register', async (req, res) => {
+  try {
+    const register = await Register.create(req.body);
+    res.status(200).json(register);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post('/login', async (req, res) => {
+  pass;
 });
 
 mongoose
   .connect(
-    'mongodb+srv://nitzantomer1998:nitzantomer1998@backend-api.nminrxb.mongodb.net/?retryWrites=true&w=majority'
+    'mongodb+srv://nitzantomer1998:nitzantomer1998@backend-api.nminrxb.mongodb.net/?retryWrites=true&w=majority',
+    { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => {
-    console.log('connected to mongoDB');
+    console.log('Connected to MongoDB');
 
-    APP.listen(PORT, () => {
-      console.log(`server is up and running at port --> ${PORT}`);
+    app.listen(PORT, () => {
+      console.log(`Server is up and running at port --> ${PORT}`);
     });
   })
   .catch((error) => {
