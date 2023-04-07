@@ -11,6 +11,8 @@
   },
   "rules": {
     "linebreak-style": "off",
-    "indent": "off"
+    "indent": "off",
+    "object-curly-spacing": "off",
+    "comma-dangle": "off"
   }
 }
