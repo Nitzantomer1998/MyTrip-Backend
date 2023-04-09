@@ -1,3 +1,0 @@
-PORT=3001
-DB_URI=mongodb+srv://nitzantomer1998:nitzantomer1998@<cluster-url>/<database-name>?retryWrites=true&w=majority
-JWT_SECRET=your-secret-key-here
