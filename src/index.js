@@ -11,6 +11,10 @@ connectDB();
 const app = express();
 
 app.use(express.json());
-app.use('/users', userRoute);
+app.get('/', (req, res) => {
+  res.send('Default message');
+});
+
+app.use('/user', userRoute);
 
 app.listen(process.env.PORT, () => console.log('Server Connected'));
