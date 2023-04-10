@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
   res.send('Default message');
 });
 
-app.use('/users', userRoute);
+app.use('/user', userRoute);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
