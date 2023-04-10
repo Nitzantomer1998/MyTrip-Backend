@@ -1,8 +1,8 @@
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
 
 const userRegistration = async (req, res) => {
-  res.send(req.body);
-  console.log(req.body);
   const { email, password } = req.body;
   const isUserExists = await User.findOne({ email });
 
@@ -11,9 +11,11 @@ const userRegistration = async (req, res) => {
     return;
   }
 
+  const hashedPassword = await bcrypt.hash(password, 10);
+
   const newUser = await User.create({
     email,
-    password,
+    password: hashedPassword,
   });
 
   res
@@ -29,12 +31,18 @@ const userAuthentication = async (req, res) => {
   if (!user) {
     res.status(401).json({ message: 'Invalid email' });
     return;
-  } else if (user.password !== password) {
+  }
+
+  const isPasswordMatch = await bcrypt.compare(password, user.password);
+
+  if (!isPasswordMatch) {
     res.status(401).json({ message: 'Invalid password' });
     return;
   }
 
-  res.status(200).json({ message: 'Login successful' });
+  const token = jwt.sign({ email }, process.env.JWT_SECRET);
+
+  res.status(200).json({ message: 'Login successful', token });
 };
 
 export { userRegistration, userAuthentication };
