@@ -1,6 +1,6 @@
 import User from '../models/userModel.js';
 
-const userRegistration = async (req, res, next) => {
+const userRegistration = async (req, res) => {
   const { email, password } = req.body;
   const isUserExists = await User.findOne({ email });
 
@@ -19,16 +19,16 @@ const userRegistration = async (req, res, next) => {
     .json({ message: 'User registered successfully', user: newUser });
 };
 
-const userAuthentication = async (req, res, next) => {
+const userAuthentication = async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
 
   if (!user) {
-    res.status(401).json({ message: 'Invalid email or password' });
+    res.status(401).json({ message: 'Invalid email' });
     return;
   } else if (user.password !== password) {
-    res.status(401).json({ message: 'Invalid email or password' });
+    res.status(401).json({ message: 'Invalid password' });
     return;
   }
 
