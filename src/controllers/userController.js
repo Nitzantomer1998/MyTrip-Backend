@@ -1,6 +1,8 @@
 import User from '../models/userModel.js';
 
 const userRegistration = async (req, res) => {
+  res.send(req.body);
+  console.log(req.body);
   const { email, password } = req.body;
   const isUserExists = await User.findOne({ email });
 
