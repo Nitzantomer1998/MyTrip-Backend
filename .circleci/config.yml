@@ -23,7 +23,7 @@ jobs:
           command: npm run linter
       - run:
           name: CD - Deploy the service
-          command: curl "https://api.render.com/deploy/srv-cglcbmceoogkndnm8p40?key=n5ufPI0GhYo"
+          command: curl "https://api.render.com/deploy/srv-ch009ljlbnoms4ugsn5g?key=ijaYK6QOLx8"
 
 workflows:
   cicd-workflow:
