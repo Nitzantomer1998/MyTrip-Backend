@@ -1,6 +1,6 @@
-import express from 'express';
-import dotenv from 'dotenv';
 import cors from 'cors';
+import dotenv from 'dotenv';
+import express from 'express';
 import connectToDB from './config/database.js';
 import userRoute from './routes/userRoute.js';
 
@@ -8,27 +8,21 @@ dotenv.config();
 
 connectToDB();
 
-const app = express();
+const server = express();
 
-app.use(
-  cors({
-    origin: process.env.CORS_ORIGIN,
-  })
-);
+server.use(cors({ origin: process.env.CORS_ORIGIN }));
+server.use(express.urlencoded({ extended: true, limit: '1mb' }));
+server.use(express.json());
 
-app.use(express.json());
+server.use('/user', userRoute);
 
-app.get('/', (req, res) => {
-  res.send('Default message');
-});
-
-app.use('/user', userRoute);
-
-app.use((err, req, res, next) => {
+server.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Internal Server Error' });
 });
 
-app.listen(process.env.PORT, () =>
-  console.log(`Server listening on port ${process.env.PORT}`)
-);
+server.get('/', (req, res) => res.send('Default message'));
+
+server.listen(process.env.PORT, () => {
+  console.log('Server Connected');
+});

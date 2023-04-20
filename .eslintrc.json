@@ -10,9 +10,6 @@
     "sourceType": "module"
   },
   "rules": {
-    "linebreak-style": "off",
-    "indent": "off",
-    "object-curly-spacing": "off",
-    "comma-dangle": "off"
+    "object-curly-spacing": ["error", "always"]
   }
 }
