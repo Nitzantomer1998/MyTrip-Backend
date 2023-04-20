@@ -3,19 +3,29 @@ import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
 
 const userRegistration = async (req, res) => {
-  const { email, password } = req.body;
-  const isUserExists = await User.findOne({ email });
+  const { username, email, password, gender, DOB } = req.body;
+  const isUserExists = await User.findOne({ username });
+  const isEmailExists = await User.findOne({ email });
 
+  console.log({ username, email, password, gender, DOB });
   if (isUserExists) {
     res.status(400).json({ message: 'User already exists' });
+    return;
+  }
+
+  if (isEmailExists) {
+    res.status(400).json({ message: 'Email already exists' });
     return;
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const newUser = await User.create({
+    username,
     email,
     password: hashedPassword,
+    gender,
+    DOB,
   });
 
   res
