@@ -33,16 +33,14 @@ const userRegistration = async (req, res) => {
 };
 
 const userAuthentication = async (req, res) => {
-  const { email, password } = req.body;
+  const email = await User.findOne({ email });
 
-  const user = await User.findOne({ email });
-
-  if (!user) {
+  if (!email) {
     res.status(401).json({ message: 'Invalid email' });
     return;
   }
 
-  const isPasswordMatch = await bcrypt.compare(password, user.password);
+  const isPasswordMatch = await bcrypt.compare(password, User.password);
 
   if (!isPasswordMatch) {
     res.status(401).json({ message: 'Invalid password' });
