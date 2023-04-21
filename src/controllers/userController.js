@@ -32,16 +32,16 @@ const userRegistration = async (req, res) => {
 };
 
 const userAuthentication = async (req, res) => {
-  let { email, password } = req.body;
+  const { email, password } = req.body;
 
-  email = await User.findOne({ email });
+  const foundUser = await User.findOne({ email });
 
-  if (!email) {
+  if (!foundUser) {
     res.status(401).json({ message: 'Invalid email' });
     return;
   }
 
-  const isPasswordMatch = await bcrypt.compare(password, User.password);
+  const isPasswordMatch = await bcrypt.compare(password, foundUser.password);
 
   if (!isPasswordMatch) {
     res.status(401).json({ message: 'Invalid password' });
