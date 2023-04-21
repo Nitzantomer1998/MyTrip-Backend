@@ -32,7 +32,9 @@ const userRegistration = async (req, res) => {
 };
 
 const userAuthentication = async (req, res) => {
-  const email = await User.findOne({ email });
+  let { email, password } = req.body;
+
+  email = await User.findOne({ email });
 
   if (!email) {
     res.status(401).json({ message: 'Invalid email' });
