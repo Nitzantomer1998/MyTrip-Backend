@@ -2,55 +2,54 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
 
-const userRegistration = async (req, res) => {
+async function registerUser(req, res) {
   const { username, email, password, gender } = req.body;
-  const isUserExists = await User.findOne({ username });
-  const isEmailExists = await User.findOne({ email });
+  const errors = {};
 
-  if (isUserExists) {
-    res.status(400).json({ message: 'Already exists' });
-    return;
+  if (await User.findOne({ username })) {
+    errors.username = 'Already exists';
   }
 
-  if (isEmailExists) {
-    res.status(400).json({ message: 'Already exists' });
-    return;
+  if (await User.findOne({ email })) {
+    errors.email = 'Already exists';
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  if (Object.keys(errors).length > 0) {
+    return res.status(400).json({ message: errors });
+  }
 
   const newUser = await User.create({
     username,
     email,
-    password: hashedPassword,
+    password: await bcrypt.hash(password, 10),
     gender,
   });
 
-  res
+  return res
     .status(201)
     .json({ message: 'User registered successfully', user: newUser });
-};
+}
 
-const userAuthentication = async (req, res) => {
+async function authenticateUser(req, res) {
   const { email, password } = req.body;
+  const errors = {};
 
   const foundUser = await User.findOne({ email });
 
   if (!foundUser) {
-    res.status(401).json({ message: 'Invalid email' });
-    return;
+    errors.email = 'Doesnt exists';
   }
 
-  const isPasswordMatch = await bcrypt.compare(password, foundUser.password);
+  if (!(await bcrypt.compare(password, foundUser.password))) {
+    errors.password = 'Doesnt match';
+  }
 
-  if (!isPasswordMatch) {
-    res.status(401).json({ message: 'Invalid password' });
-    return;
+  if (Object.keys(errors).length > 0) {
+    return res.status(401).json({ message: errors });
   }
 
   const token = jwt.sign({ email }, process.env.JWT_SECRET);
+  return res.status(200).json({ message: 'Login successful', token });
+}
 
-  res.status(200).json({ message: 'Login successful', token });
-};
-
-export { userRegistration, userAuthentication };
+export { registerUser, authenticateUser };
