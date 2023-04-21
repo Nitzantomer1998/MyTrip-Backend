@@ -5,8 +5,7 @@ import connectToDB from './config/database.js';
 import userRoute from './routes/userRoute.js';
 
 dotenv.config();
-
-connectToDB();
+await connectToDB();
 
 const server = express();
 
