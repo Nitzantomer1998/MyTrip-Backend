@@ -19,9 +19,6 @@ const userSchema = mongoose.Schema(
       enum: ['Male', 'Female', 'Refrigerator'],
       required: true,
     },
-    DOB: {
-      type: Date,
-    },
   },
   {
     timestamps: true,

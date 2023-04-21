@@ -3,17 +3,17 @@ import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
 
 const userRegistration = async (req, res) => {
-  const { username, email, password, gender, DOB } = req.body;
+  const { username, email, password, gender } = req.body;
   const isUserExists = await User.findOne({ username });
   const isEmailExists = await User.findOne({ email });
 
   if (isUserExists) {
-    res.status(400).json({ message: 'User already exists' });
+    res.status(400).json({ message: 'Already exists' });
     return;
   }
 
   if (isEmailExists) {
-    res.status(400).json({ message: 'Email already exists' });
+    res.status(400).json({ message: 'Already exists' });
     return;
   }
 
@@ -24,7 +24,6 @@ const userRegistration = async (req, res) => {
     email,
     password: hashedPassword,
     gender,
-    DOB,
   });
 
   res
