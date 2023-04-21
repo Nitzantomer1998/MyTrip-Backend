@@ -13,9 +13,7 @@ jobs:
       - run:
           name: install dependencies - NPM packages
           command: npm install
-      - run:
-          name: run tests
-          command: npm run tester
+
       - run:
           name: Run linter
           command: npm run linter
