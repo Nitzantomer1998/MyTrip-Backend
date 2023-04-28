@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
 
+
 async function registerUser(req, res) {
   const { username, email, password, gender } = req.body;
   const errors = {};
