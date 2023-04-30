@@ -1,6 +1,6 @@
 # PM-Backend
 
-# Appointments Management System
+# Social Network Application
 
 This project is part of academic course - Project management in SCE College.
 This project is an example for interacting with an external web API using CICD development methods.
