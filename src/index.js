@@ -9,7 +9,22 @@ await connectToDB();
 
 const server = express();
 
-server.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
+server.use(
+  cors({
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        'http://localhost:3000',
+        'https://mytrip-frontend.onrender.com',
+      ];
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+  })
+);
+
 server.use(express.urlencoded({ extended: true, limit: '1mb' }));
 server.use(express.json());
 
@@ -22,6 +37,6 @@ server.use((err, req, res, next) => {
 
 server.get('/', (req, res) => res.send('Default message'));
 
-server.listen(process.env.PORT || 3000, () => {
+server.listen(process.env.PORT || 5000, () => {
   console.log('Server Connected');
 });
