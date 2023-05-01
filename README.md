@@ -1,4 +1,4 @@
-# PM-Backend
+# MyTrip-Backend
 
 # Social Network Application
 
