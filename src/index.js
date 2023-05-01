@@ -10,19 +10,19 @@ await connectToDB();
 const server = express();
 
 server.use(
-  cors({
-    origin: (origin, callback) => {
-      const allowedOrigins = [
-        'http://localhost:3000',
-        'https://mytrip-frontend.onrender.com',
-      ];
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-  })
+    cors({
+      origin: (origin, callback) => {
+        const allowedOrigins = [
+          'http://localhost:3000',
+          'https://mytrip-frontend.onrender.com',
+        ];
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
+      },
+    }),
 );
 
 server.use(express.urlencoded({ extended: true, limit: '1mb' }));
