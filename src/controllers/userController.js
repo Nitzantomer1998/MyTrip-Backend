@@ -6,11 +6,11 @@ async function registerUser(req, res) {
   const { username, email, password, gender } = req.body;
   const errors = {};
 
-  if (await User.findOne({ username })) {
+  if (await User.countDocuments({ username })) {
     errors.username = 'Already exists';
   }
 
-  if (await User.findOne({ email })) {
+  if (await User.countDocuments({ email })) {
     errors.email = 'Already exists';
   }
 
@@ -34,14 +34,15 @@ async function authenticateUser(req, res) {
   const { email, password } = req.body;
   const errors = {};
 
-  const foundUser = await User.findOne({ email });
-
-  if (!foundUser) {
+  const emailCount = await User.countDocuments({ email });
+  if (emailCount === 0) {
     errors.email = 'Doesnt exists';
-  }
+  } else {
+    const foundUser = await User.findOne({ email });
 
-  if (!(await bcrypt.compare(password, foundUser.password))) {
-    errors.password = 'Doesnt match';
+    if (!(await bcrypt.compare(password, foundUser.password))) {
+      errors.password = 'Doesnt match';
+    }
   }
 
   if (Object.keys(errors).length > 0) {
