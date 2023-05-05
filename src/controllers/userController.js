@@ -2,7 +2,6 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
 
-
 async function registerUser(req, res) {
   const { username, email, password, gender } = req.body;
   const errors = {};
@@ -52,5 +51,14 @@ async function authenticateUser(req, res) {
   const token = jwt.sign({ email }, process.env.JWT_SECRET);
   return res.status(200).json({ message: 'Login successful', token });
 }
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching user data' });
+  }
+};
 
 export { registerUser, authenticateUser };
