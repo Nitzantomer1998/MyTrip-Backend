@@ -28,7 +28,7 @@ server.use(
 server.use(express.urlencoded({ extended: true, limit: '1mb' }));
 server.use(express.json());
 
-server.use('/user', userRoute);
+server.use('/api/user', userRoute);
 
 server.use((err, req, res, next) => {
   console.error(err.stack);
@@ -38,5 +38,5 @@ server.use((err, req, res, next) => {
 server.get('/', (req, res) => res.send('Default message'));
 
 server.listen(process.env.PORT || 5000, () => {
-  console.log('Server Connected');
+  console.log('Server Connected', process.env.PORT);
 });

@@ -6,11 +6,11 @@ async function registerUser(req, res) {
   const { username, email, password, gender } = req.body;
   const errors = {};
 
-  if (await User.countDocuments({ username })) {
+  if (await User.findOne({ username })) {
     errors.username = 'Already exists';
   }
 
-  if (await User.countDocuments({ email })) {
+  if (await User.findOne({ email })) {
     errors.email = 'Already exists';
   }
 
@@ -34,23 +34,30 @@ async function authenticateUser(req, res) {
   const { email, password } = req.body;
   const errors = {};
 
-  const emailCount = await User.countDocuments({ email });
-  if (emailCount === 0) {
-    errors.email = 'Doesnt exists';
-  } else {
-    const foundUser = await User.findOne({ email });
+  const foundUser = await User.findOne({ email });
+  console.log(foundUser, 'foundUser');
 
-    if (!(await bcrypt.compare(password, foundUser.password))) {
-      errors.password = 'Doesnt match';
-    }
+  if (!foundUser) {
+    errors.email = 'Doesnt exists';
+  }
+
+  if (!(await bcrypt.compare(password, foundUser.password))) {
+    errors.password = 'Doesnt match';
   }
 
   if (Object.keys(errors).length > 0) {
     return res.status(401).json({ message: errors });
   }
 
-  const token = jwt.sign({ email }, process.env.JWT_SECRET);
-  return res.status(200).json({ message: 'Login successful', token });
+  const token = jwt.sign(
+    { email, username: foundUser.username },
+    process.env.JWT_SECRET
+  );
+  return res.status(200).json({
+    message: 'Login successful2',
+    token,
+    user: { username: foundUser.username, email: foundUser.email },
+  });
 }
 
 export const getAllUsers = async (req, res) => {
