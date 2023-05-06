@@ -35,6 +35,7 @@ async function authenticateUser(req, res) {
   const errors = {};
 
   const foundUser = await User.findOne({ email });
+  console.log(foundUser, 'foundUser');
 
   if (!foundUser) {
     errors.email = 'Doesnt exists';
@@ -48,8 +49,15 @@ async function authenticateUser(req, res) {
     return res.status(401).json({ message: errors });
   }
 
-  const token = jwt.sign({ email }, process.env.JWT_SECRET);
-  return res.status(200).json({ message: 'Login successful', token });
+  const token = jwt.sign(
+    { email, username: foundUser.username },
+    process.env.JWT_SECRET
+  );
+  return res.status(200).json({
+    message: 'Login successful2',
+    token,
+    user: { username: foundUser.username, email: foundUser.email },
+  });
 }
 
 export const getAllUsers = async (req, res) => {
