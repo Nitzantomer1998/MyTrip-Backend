@@ -11,7 +11,7 @@ This project is an example for interacting with an external web API using CICD d
 - [Technologies](#technologies)
 - [Installation](#Installation)
 - [Running The Application](#Running-The-Application)
-- [Authors](#Authors)
+
 
 ## General info
 
