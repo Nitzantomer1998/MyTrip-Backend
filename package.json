@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
+    "linter": "eslint src/*.js --color",
     "dev": "nodemon src/index.js",
     "depcheck": "npx depcheck",
     "updates": "npx npm-check-updates"
@@ -40,6 +41,8 @@
   },
   "devDependencies": {
     "depcheck": "^1.4.3",
+    "eslint": "^8.40.0",
+    "eslint-config-google": "^0.14.0",
     "nodemon": "^2.0.22",
     "npm-check-updates": "^16.10.10"
   }
