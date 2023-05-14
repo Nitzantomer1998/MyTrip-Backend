@@ -20,7 +20,7 @@ const router = express.Router();
 
 // Define GET routes
 router.get('/getUserProfile/:username', userMiddleware, getUserProfile); // Get rid of "freindship"
-router.get('/getUserSearchHistory', userMiddleware, getUserSearchHistory); // Finished
+router.get('/getUserSearchHistory', userMiddleware, getUserSearchHistory);
 
 // Define POST routes
 router.post('/registerUser', registerUser); // Finished
