@@ -15,7 +15,6 @@ import {
   addUserToSearchHistory,
   removeUserFromSearch,
   upadeteUserPassword,
-  addFriend,
   updateDetails,
   updateCover,
   updateProfilePicture,
@@ -45,7 +44,7 @@ router.post('/updateUserPassword', upadeteUserPassword);
 router.put('/updateDetails', userMiddleware, updateDetails);
 
 router.put('/updateCover', userMiddleware, updateCover);
-router.put('/addFriend/:id', userMiddleware, addFriend);
+
 
 
 
