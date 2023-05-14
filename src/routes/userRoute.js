@@ -19,7 +19,7 @@ import {
 const router = express.Router();
 
 // Define GET routes
-router.get('/getUserProfile/:username', userMiddleware, getUserProfile); // Works, but not perfect
+router.get('/getUserProfile/:username', userMiddleware, getUserProfile); // Get rid of "freindship"
 router.get('/getUserSearchHistory', userMiddleware, getUserSearchHistory); // Finished
 
 // Define POST routes
