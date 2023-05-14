@@ -6,7 +6,6 @@ import userMiddleware from '../middlwares/userMiddleware.js';
 import {
   getUserProfile,
   getUserSearchHistory,
-  getFriendsPageInfos,
   registerUser,
   userLogin,
   findUser,
@@ -28,7 +27,6 @@ const router = express.Router();
 // Define GET routes
 router.get('/getUserProfile/:username', userMiddleware, getUserProfile); // Works, but not perfect
 router.get('/getUserSearchHistory', userMiddleware, getUserSearchHistory); // Finished
-router.get('/getFriendsPageInfos', userMiddleware, getFriendsPageInfos);
 
 // Define POST routes
 router.post('/registerUser', registerUser); // Finished
