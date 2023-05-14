@@ -8,7 +8,6 @@ import {
   getUserSearchHistory,
   registerUser,
   userLogin,
-  findUser,
   searchUser,
   followUser,
   unfollowUser,
@@ -29,7 +28,6 @@ router.get('/getUserSearchHistory', userMiddleware, getUserSearchHistory); // Fi
 // Define POST routes
 router.post('/registerUser', registerUser); // Finished
 router.post('/userLogin', userLogin); // Finished
-router.post('/findUser', findUser); // ??? Didnt found when its called -----------------
 router.post('/searchUser/:searchTerm', userMiddleware, searchUser); // Finish
 
 // Define PUT routes
