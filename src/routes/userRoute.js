@@ -43,9 +43,6 @@ router.put('/updateProfilePicture', userMiddleware, updateProfilePicture);
 router.post('/updateUserPassword', upadeteUserPassword);
 router.put('/updateDetails', userMiddleware, updateDetails);
 
-router.put('/updateCover', userMiddleware, updateCover);
-
-
 
 
 // Export router
