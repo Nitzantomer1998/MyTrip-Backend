@@ -25,7 +25,7 @@ router.get('/getUserSearchHistory', userMiddleware, getUserSearchHistory);
 // Define POST routes
 router.post('/registerUser', registerUser);
 router.post('/userLogin', userLogin);
-router.post('/searchUser/:searchTerm', userMiddleware, searchUser); // Finish
+router.post('/searchUser/:searchTerm', userMiddleware, searchUser);
 
 // Define PUT routes
 router.put('/followUser/:id', userMiddleware, followUser); // Works, but not perfect ----- update after fix following/follow button
