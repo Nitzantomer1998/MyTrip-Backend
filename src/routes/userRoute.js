@@ -10,7 +10,7 @@ import {
   userLogin,
   searchUser,
   followUser,
-  unfollowUser,
+  unFollowUser,
   addUserToSearchHistory,
   removeUserFromSearch,
 } from '../controllers/userController.js';
@@ -29,7 +29,7 @@ router.post('/searchUser/:searchTerm', userMiddleware, searchUser);
 
 // Define PUT routes
 router.put('/followUser/:id', userMiddleware, followUser);
-router.put('/unfollowUser/:id', userMiddleware, unfollowUser); // Works, but not perfect ----- update after fix following/follow button
+router.put('/unFollowUser/:id', userMiddleware, unFollowUser);
 router.put('/addUserToSearchHistory', userMiddleware, addUserToSearchHistory); // Works, but not perfect
 router.put('/removeUserFromSearch', userMiddleware, removeUserFromSearch); // Finished
 
