@@ -24,7 +24,7 @@ router.get('/getUserSearchHistory', userMiddleware, getUserSearchHistory);
 
 // Define POST routes
 router.post('/registerUser', registerUser);
-router.post('/userLogin', userLogin); // Finished
+router.post('/userLogin', userLogin);
 router.post('/searchUser/:searchTerm', userMiddleware, searchUser); // Finish
 
 // Define PUT routes
