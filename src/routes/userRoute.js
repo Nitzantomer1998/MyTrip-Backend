@@ -12,7 +12,7 @@ import {
   followUser,
   unFollowUser,
   addUserToSearchHistory,
-  removeUserFromSearch,
+  removeUserFromSearchHistory,
 } from '../controllers/userController.js';
 
 // Define router
@@ -31,10 +31,9 @@ router.post('/searchUser/:searchTerm', userMiddleware, searchUser);
 router.put('/followUser/:id', userMiddleware, followUser);
 router.put('/unFollowUser/:id', userMiddleware, unFollowUser);
 router.put('/addUserToSearchHistory', userMiddleware, addUserToSearchHistory);
-router.put('/removeUserFromSearch', userMiddleware, removeUserFromSearch); // Finished
-
-
-
+router.put('/removeUserFromSearch', userMiddleware, removeUserFromSearch);
+router.put('/removeUserFromSearchHistory', userMiddleware, removeUserFromSearchHistory);
 
 // Export router
 export default router;
+
