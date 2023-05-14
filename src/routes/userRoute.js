@@ -13,8 +13,6 @@ import {
   unfollowUser,
   addUserToSearchHistory,
   removeUserFromSearch,
-  updateCover,
-  updateProfilePicture,
 } from '../controllers/userController.js';
 
 // Define router
@@ -35,7 +33,6 @@ router.put('/unfollowUser/:id', userMiddleware, unfollowUser); // Works, but not
 router.put('/addUserToSearchHistory', userMiddleware, addUserToSearchHistory); // Works, but not perfect
 router.put('/removeUserFromSearch', userMiddleware, removeUserFromSearch); // Finished
 
-router.put('/updateProfilePicture', userMiddleware, updateProfilePicture);
 
 
 
