@@ -5,10 +5,10 @@ import express from 'express';
 import fileUpload from 'express-fileupload';
 import { readdirSync } from 'fs';
 
-// Import needed files
+// Import needed functions
 import connectDB from './config/database.js';
 
-// Config environment variables
+// Configurate environment variables
 dotenv.config();
 
 // Connect to database
