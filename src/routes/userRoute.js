@@ -13,7 +13,6 @@ import {
   unfollowUser,
   addUserToSearchHistory,
   removeUserFromSearch,
-  upadeteUserPassword,
   updateCover,
   updateProfilePicture,
 } from '../controllers/userController.js';
@@ -37,7 +36,6 @@ router.put('/addUserToSearchHistory', userMiddleware, addUserToSearchHistory); /
 router.put('/removeUserFromSearch', userMiddleware, removeUserFromSearch); // Finished
 
 router.put('/updateProfilePicture', userMiddleware, updateProfilePicture);
-router.post('/updateUserPassword', upadeteUserPassword);
 
 
 
