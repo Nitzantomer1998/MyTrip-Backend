@@ -15,7 +15,6 @@ import {
   addUserToSearchHistory,
   removeUserFromSearch,
   upadeteUserPassword,
-  updateDetails,
   updateCover,
   updateProfilePicture,
 } from '../controllers/userController.js';
@@ -41,7 +40,6 @@ router.put('/removeUserFromSearch', userMiddleware, removeUserFromSearch); // Fi
 
 router.put('/updateProfilePicture', userMiddleware, updateProfilePicture);
 router.post('/updateUserPassword', upadeteUserPassword);
-router.put('/updateDetails', userMiddleware, updateDetails);
 
 
 
