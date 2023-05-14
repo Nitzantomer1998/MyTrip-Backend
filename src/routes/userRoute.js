@@ -23,7 +23,7 @@ router.get('/getUserProfile/:username', userMiddleware, getUserProfile); // Get 
 router.get('/getUserSearchHistory', userMiddleware, getUserSearchHistory);
 
 // Define POST routes
-router.post('/registerUser', registerUser); // Finished
+router.post('/registerUser', registerUser);
 router.post('/userLogin', userLogin); // Finished
 router.post('/searchUser/:searchTerm', userMiddleware, searchUser); // Finish
 
