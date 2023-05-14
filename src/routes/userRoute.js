@@ -16,7 +16,6 @@ import {
   addUserToSearchHistory,
   removeUserFromSearch,
   upadeteUserPassword,
-  acceptRequest,
   cancelRequest,
   addFriend,
   updateDetails,
@@ -51,7 +50,7 @@ router.put('/updateDetails', userMiddleware, updateDetails);
 router.put('/updateCover', userMiddleware, updateCover);
 router.put('/addFriend/:id', userMiddleware, addFriend);
 router.put('/cancelRequest/:id', userMiddleware, cancelRequest);
-router.put('/acceptRequest/:id', userMiddleware, acceptRequest);
+
 
 
 // Export router
