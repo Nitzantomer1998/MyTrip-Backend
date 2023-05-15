@@ -1,5 +1,4 @@
 // Import needed packages
-import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
 // Import needed models
