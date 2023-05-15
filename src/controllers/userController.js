@@ -134,7 +134,7 @@ async function userLogin(req, res) {
 
 async function searchUser(req, res) {
   try {
-    // Destructure req.params to get needed fields
+    // Destructuring needed fields
     const { searchTerm } = req.params;
 
     // Find user by searchTerm and get his username and picture
@@ -142,7 +142,7 @@ async function searchUser(req, res) {
       username: new RegExp(`^${searchTerm}`, 'i'),
     }).select('username picture');
 
-    // Send back searched user
+    // Send back the searched user info
     res.status(200).json(searchedUser);
   } catch (error) {
     res.status(500).json({ message: error.message });
