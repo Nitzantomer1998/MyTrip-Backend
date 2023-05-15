@@ -145,34 +145,7 @@ async function userLogin(req, res) {
   }
 }
 
-async function findUser(req, res) {
-  console.log('finduser function');
-  // try {
-  //   console.log('finduser function');
-  //   // Destructure req.body to get needed fields
-  //   const { email } = req.body;
-  //   console.log(`Email - ${email}`);
 
-  //   // Find user by email without password
-  //   const user = await User.findOne({ email }).select('-password');
-  //   console.log(`User - ${user}`);
-  //   // Email doesnt exist, return accordingly
-  //   if (!user) {
-  //     return res.status(401).json({
-  //       message: 'Account Doesnt Exists.',
-  //     });
-  //   }
-
-  //   // Send back user info
-  //   console.log(email.username, user.picture);
-  //   return res.status(200).json({
-  //     email: email.username, //Email? not user??
-  //     picture: user.picture,
-  //   });
-  // } catch (error) {
-  //   res.status(500).json({ message: error.message });
-  // }
-}
 
 async function searchUser(req, res) {
   try {
@@ -324,7 +297,6 @@ export {
   getFriendsPageInfos,
   registerUser,
   userLogin,
-  findUser,
   searchUser,
   followUser,
   unfollowUser,
