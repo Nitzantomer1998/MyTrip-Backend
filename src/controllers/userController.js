@@ -47,20 +47,21 @@ async function getUserProfile(req, res) {
 
 async function getUserSearchHistory(req, res) {
   try {
-    // Destructure req.user to get needed fields
+    // Destructuring needed fields
     const { id } = req.user;
 
-    // Getting the user search history
+    // Getting the current user search history
     const currentUser = await User.findById(id)
       .select('search')
       .populate('search.user', 'username picture');
 
-    // Send back user search history
-    res.json(currentUser.search);
+    // Send back the user search history
+    res.status(200).json(currentUser.search);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 }
+
 
 
 
@@ -279,7 +280,7 @@ async function removeUserFromSearch(req, res) {
 
 export {
  getUserProfile,
-  getUserSearchHistory,
+ getUserSearchHistory,
   registerUser,
   userLogin,
   searchUser,
