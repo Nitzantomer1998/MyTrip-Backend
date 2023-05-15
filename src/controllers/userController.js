@@ -309,25 +309,6 @@ async function removeUserFromSearch(req, res) {
   }
 }
 
-async function upadeteUserPassword(req, res) {
-  try {
-    // Destructure req.body to get needed fields
-    const { email, password } = req.body;
-
-    // Find user by email and update the new password
-    await User.findOneAndUpdate(
-      { email },
-      { password: await bcrypt.hash(password, 12) }
-    );
-
-    // Send back success message
-    return res
-      .status(200)
-      .json({ message: 'Password Been Changed Successfully' });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-}
 
 
 
@@ -349,5 +330,4 @@ export {
   unfollowUser,
   addUserToSearchHistory,
   removeUserFromSearch,
-  upadeteUserPassword,
 };
