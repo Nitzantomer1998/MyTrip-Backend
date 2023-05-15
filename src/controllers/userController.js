@@ -1,10 +1,10 @@
 // Import needed models
 import User from '../models/userModel.js';
 import Post from '../models/postModel.js';
-import { hash, compare } from 'bcrypt';
 
 // Import needed functions
 import generateToken from '../helpers/generateToken.js';
+import { hash, compare } from 'bcrypt';
 
 async function getUserProfile(req, res) {
   try {
@@ -177,6 +177,23 @@ async function unFollowUser(req, res) {
   }
 }
 
+async function updateProfilePicture(req, res) {
+  try {
+    // Deconstructing needed fields
+    const { url } = req.body;
+
+    // Update user profile picture
+    await User.findByIdAndUpdate(req.user.id, {
+      picture: req.body.url,
+    });
+
+    // Send back success message
+    res.status(200).json({ message: 'Profile picture updated successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 async function addUserToSearchHistory(req, res) {
   try {
     // Destructuring needed fields
@@ -236,6 +253,56 @@ async function removeUserFromSearchHistory(req, res) {
   }
 }
 
+async function shareUserPost(req, res) {
+  try {
+    console.log('share post');
+    console.log(`req.params: ${JSON.stringify(req.params)}`);
+    console.log(`req.body: ${JSON.stringify(req.body)}`);
+
+    // Destructing needed fields
+    const { postId, userId } = req.params;
+
+    // Récupérer le post d'origine avec les commentaires et les informations de l'utilisateur
+    const originalPost = await Post.findById(postId)
+      .populate('comments')
+      .populate({
+        path: 'user',
+        select: 'username picture',
+      });
+
+    console.log(`originalPost: ${JSON.stringify(originalPost)}`);
+    if (!originalPost) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+
+    // Récupérer les informations de l'utilisateur qui effectue la demande de partage
+    const sharingUser = await User.findById(userId, 'username');
+
+    // Créer le nouveau post partagé en incluant les commentaires, le texte du post d'origine et les noms d'utilisateur
+    const newPost = new Post({
+      post: postId,
+      user: userId,
+      sharedFrom: postId,
+      text: originalPost.text,
+      images: originalPost.images,
+      background: originalPost.background,
+      originalUser: {
+        username: originalPost.user.username,
+      },
+      sharingUser: {
+        username: sharingUser.username,
+      },
+    });
+
+    await newPost.save();
+
+    res.json(newPost);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: 'Failed to share post' });
+  }
+}
+
 // Export the functions
 export {
   getUserProfile,
@@ -243,8 +310,10 @@ export {
   registerUser,
   userLogin,
   searchUser,
+  shareUserPost,
   followUser,
   unFollowUser,
+  updateProfilePicture,
   addUserToSearchHistory,
   removeUserFromSearchHistory,
 };
