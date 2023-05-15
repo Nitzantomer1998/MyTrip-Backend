@@ -1,9 +1,7 @@
-// Import needed packages
-import bcrypt from 'bcrypt';
-
 // Import needed models
 import User from '../models/userModel.js';
 import Post from '../models/postModel.js';
+import { hash, compare } from 'bcrypt';
 
 // Import needed functions
 import generateToken from '../helpers/generateToken.js';
@@ -12,13 +10,12 @@ async function getUserProfile(req, res) {
   try {
     // Destructuring needed fields
     const { username } = req.params;
-    const { id } = req.user;
 
     // Find user by username without password
     const searchProfile = await User.findOne({ username }).select('-password');
 
     // Find user by id
-    const currentUser = await User.findById(id);
+    const currentUser = await User.findById(req.user.id);
 
     // Get the search profile posts and populate them with user info and comments
     const posts = await Post.find({ user: searchProfile._id })
@@ -47,11 +44,8 @@ async function getUserProfile(req, res) {
 
 async function getUserSearchHistory(req, res) {
   try {
-    // Destructuring needed fields
-    const { id } = req.user;
-
     // Getting the current user search history
-    const currentUser = await User.findById(id)
+    const currentUser = await User.findById(req.user.id)
       .select('search')
       .populate('search.user', 'username picture');
 
@@ -79,7 +73,7 @@ async function registerUser(req, res) {
     const newUser = await new User({
       username,
       email,
-      password: await bcrypt.hash(password, 12),
+      password: await hash(password, 12),
       gender,
     });
 
@@ -112,7 +106,7 @@ async function userLogin(req, res) {
       return res.status(400).json({ message: 'Email does not exist' });
 
     // Incorrect password, return accordingly
-    if (!(await bcrypt.compare(password, foundUser.password)))
+    if (!(await compare(password, foundUser.password)))
       return res.status(400).json({ message: 'Unmatched password' });
 
     // Send back the found user info and token
@@ -187,11 +181,11 @@ async function addUserToSearchHistory(req, res) {
   try {
     // Destructuring needed fields
     const { searchUser } = req.body;
-    const { id } = req.user;
+    const { id: currentUser } = req.user;
 
     // Find the user by ID and update the search history
     const updatedUser = await User.findOneAndUpdate(
-      { _id: id, 'search.user': searchUser },
+      { _id: currentUser, 'search.user': searchUser },
       { $set: { 'search.$.createdAt': new Date() } },
       { new: true }
     );
@@ -199,7 +193,7 @@ async function addUserToSearchHistory(req, res) {
     // If the user doesn't exist in the search history, add a new search item
     if (!updatedUser) {
       await User.findOneAndUpdate(
-        { _id: id },
+        { _id: currentUser },
         { $push: { search: { user: searchUser, createdAt: new Date() } } },
         { new: true, upsert: true }
       );
@@ -222,10 +216,10 @@ async function removeUserFromSearchHistory(req, res) {
   try {
     // Destructuring needed fields
     const { searchUser } = req.body;
-    const { id } = req.user;
+    const { id: currentUser } = req.user;
 
     // Find user by id
-    const foundUser = { _id: id };
+    const foundUser = { _id: currentUser };
 
     // Remove user from search history
     const removeUser = { $pull: { search: { user: searchUser } } };
@@ -242,6 +236,7 @@ async function removeUserFromSearchHistory(req, res) {
   }
 }
 
+// Export the functions
 export {
   getUserProfile,
   getUserSearchHistory,
