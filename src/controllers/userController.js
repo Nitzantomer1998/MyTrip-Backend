@@ -156,23 +156,13 @@ async function followUser(req, res) {
     const receiver = await User.findById(req.params.id);
 
     // Add the receiver to the sender following
-    if (!sender.following.includes(receiver._id)) {
-      await sender.updateOne({
-        $push: { following: receiver._id },
-      });
-      console.log(`${sender} following`);
-    }
+    await sender.updateOne({ $push: { following: receiver._id } });
 
     // Add the sender to the receiver followers
-    if (!receiver.followers.includes(sender._id)) {
-      await receiver.updateOne({
-        $push: { followers: sender._id },
-      });
-      console.log(`${receiver} followers`);
-    }
+    await receiver.updateOne({ $push: { followers: sender._id } });
 
     // Send back success message
-    res.json({ message: 'User Is Following Successfully' });
+    res.status(200).json({ message: 'User is following successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
