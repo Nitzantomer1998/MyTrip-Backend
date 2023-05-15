@@ -104,35 +104,32 @@ async function registerUser(req, res) {
 
 async function userLogin(req, res) {
   try {
-    // Destructure req.body to get needed fields
+    // Destructuring needed fields
     const { email, password } = req.body;
 
     // Find user by email
-    const user = await User.findOne({ email });
+    const foundUser = await User.findOne({ email });
 
     // Email doesnt exist, return accordingly
-    if (!user) {
-      return res.status(401).json({ message: 'Email Doesnt Exist' });
-    }
+    if (!foundUser)
+      return res.status(400).json({ message: 'Email does not exist' });
 
-    // Password is incorrect, return accordingly
-    if (!(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ message: 'Invalid Password' });
-    }
+    // Incorrect password, return accordingly
+    if (!(await bcrypt.compare(password, foundUser.password)))
+      return res.status(400).json({ message: 'Unmatched password' });
 
-    // Send back user info and token
+    // Send back the found user info and token
     res.status(201).send({
-      id: user._id,
-      username: user.username,
-      picture: user.picture,
-      token: generateToken({ id: user._id.toString() }, '1d'),
-      message: 'Logged In Successfully',
+      id: foundUser._id,
+      username: foundUser.username,
+      picture: foundUser.picture,
+      token: generateToken({ id: foundUser._id.toString() }, '7d'),
+      message: 'User logged in successfully',
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 }
-
 
 
 async function searchUser(req, res) {
