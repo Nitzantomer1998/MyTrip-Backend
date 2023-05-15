@@ -438,35 +438,6 @@ const cancelRequest = async (req, res) => {
   }
 };
 
-const acceptRequest = async (req, res) => {
-  try {
-    if (req.user.id !== req.params.id) {
-      const receiver = await User.findById(req.user.id);
-      const sender = await User.findById(req.params.id);
-      if (receiver.requests.includes(sender._id)) {
-        await receiver.update({
-          $push: { friends: sender._id, following: sender._id },
-        });
-        await sender.update({
-          $push: { friends: receiver._id, followers: receiver._id },
-        });
-        await receiver.updateOne({
-          $pull: { requests: sender._id },
-        });
-        res.json({ message: 'friend request accepted' });
-      } else {
-        return res.status(400).json({ message: 'Already friends' });
-      }
-    } else {
-      return res
-        .status(400)
-        .json({ message: "You can't accept a request from  yourself" });
-    }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 
 
 export {
@@ -482,7 +453,6 @@ export {
   addUserToSearchHistory,
   removeUserFromSearch,
   upadeteUserPassword,
-  acceptRequest,
   cancelRequest,
   addFriend,
   updateDetails,
