@@ -6,7 +6,7 @@ import User from '../models/userModel.js';
 import Post from '../models/postModel.js';
 
 // Import needed functions
-import generateToken from '../helpers/tokens.js';
+import generateToken from '../helpers/generateToken.js';
 
 async function getUserProfile(req, res) {
   try {
@@ -61,9 +61,6 @@ async function getUserSearchHistory(req, res) {
     res.status(500).json({ message: error.message });
   }
 }
-
-
-
 
 async function registerUser(req, res) {
   try {
@@ -130,7 +127,6 @@ async function userLogin(req, res) {
     res.status(500).json({ message: error.message });
   }
 }
-
 
 async function searchUser(req, res) {
   try {
@@ -222,45 +218,38 @@ async function addUserToSearchHistory(req, res) {
   }
 }
 
-async function removeUserFromSearch(req, res) {
+async function removeUserFromSearchHistory(req, res) {
   try {
-    // Destructure req to get needed fields
+    // Destructuring needed fields
     const { searchUser } = req.body;
     const { id } = req.user;
 
-    // Find user by id filter
-    const filter = { _id: id };
+    // Find user by id
+    const foundUser = { _id: id };
 
-    // Find user by id update
-    const update = { $pull: { search: { user: searchUser } } };
+    // Remove user from search history
+    const removeUser = { $pull: { search: { user: searchUser } } };
 
-    // Find user by id and remove search
-    await User.updateOne(filter, update);
+    // Update user search history
+    await User.updateOne(foundUser, removeUser);
 
     // Send back success message
-    res.status(200).json({ message: 'User Removed From Search Successfully' });
+    res
+      .status(200)
+      .json({ message: 'User removed from search history successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 }
 
-
-
-
-
-
-
-
-
-
 export {
- getUserProfile,
- getUserSearchHistory,
+  getUserProfile,
+  getUserSearchHistory,
   registerUser,
   userLogin,
   searchUser,
   followUser,
   unFollowUser,
   addUserToSearchHistory,
-  removeUserFromSearch,
+  removeUserFromSearchHistory,
 };
