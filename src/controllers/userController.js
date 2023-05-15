@@ -189,36 +189,33 @@ async function unFollowUser(req, res) {
 
 async function addUserToSearchHistory(req, res) {
   try {
-    // Destructure req to get needed fields
+    // Destructuring needed fields
     const { searchUser } = req.body;
     const { id } = req.user;
 
-    // Find user by id
-    const user = await User.findById(id);
+    // Find the user by ID and update the search history
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: id, 'search.user': searchUser },
+      { $set: { 'search.$.createdAt': new Date() } },
+      { new: true }
+    );
 
-    // Create new search
-    const search = {
-      user: searchUser,
-      createdAt: new Date(),
-    };
-
-    const check = user.search.find((x) => x.user.toString() === searchUser);
-    if (check) {
-      await User.updateOne(
-        {
-          _id: id,
-          'search._id': check._id,
-        },
-        {
-          $set: { 'search.$.createdAt': new Date() },
-        }
+    // If the user doesn't exist in the search history, add a new search item
+    if (!updatedUser) {
+      await User.findOneAndUpdate(
+        { _id: id },
+        { $push: { search: { user: searchUser, createdAt: new Date() } } },
+        { new: true, upsert: true }
       );
-    } else {
-      await User.findByIdAndUpdate(id, {
-        $push: {
-          search,
-        },
+
+      // Send back success message
+      res.status(200).json({
+        message: 'User been added to the search history successfully',
       });
+    } else {
+      res
+        .status(200)
+        .json({ message: 'User been updated in search history successfully' });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
