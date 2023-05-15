@@ -67,34 +67,35 @@ async function getUserSearchHistory(req, res) {
 
 async function registerUser(req, res) {
   try {
-    // Destructure req.body to get needed fields
+    // Destructuring needed fields
     const { username, email, password, gender } = req.body;
 
     // Username is already taken, return accordingly
-    if (await User.findOne({ username })) {
-      return res.status(400).json({ message: 'Username Already Taken' });
-    }
+    if (await User.findOne({ username }))
+      return res.status(400).json({ message: 'Username already taken' });
 
     // Email is already taken, return accordingly
-    if (await User.findOne({ email })) {
-      return res.status(400).json({ message: 'Email Address Already Taken' });
-    }
+    if (await User.findOne({ email }))
+      return res.status(400).json({ message: 'Email already taken' });
 
-    // Create new user
-    const user = await User.create({
+    // Creating new user
+    const newUser = await new User({
       username,
       email,
       password: await bcrypt.hash(password, 12),
       gender,
     });
 
-    // Send back user info and token
+    // Saving the new user
+    await newUser.save();
+
+    // Send back the new user info and token
     res.status(201).send({
-      id: user._id,
-      username: user.username,
-      picture: user.picture,
-      token: generateToken({ id: user._id.toString() }, '1d'),
-      message: 'Registered Successfully',
+      id: newUser._id,
+      username: newUser.username,
+      picture: newUser.picture,
+      token: generateToken({ id: newUser._id.toString() }, '7d'),
+      message: 'User registered successfully',
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
