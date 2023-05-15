@@ -10,30 +10,36 @@ import generateToken from '../helpers/tokens.js';
 
 async function getUserProfile(req, res) {
   try {
-    // Destructure req to get needed fields
+    // Destructuring needed fields
     const { username } = req.params;
     const { id } = req.user;
 
     // Find user by username without password
-    const profile = await User.findOne({ username }).select('-password');
+    const searchProfile = await User.findOne({ username }).select('-password');
 
     // Find user by id
-    const user = await User.findById(id);
+    const currentUser = await User.findById(id);
 
-    // The needed profile doesnt exist, return accordingly
-    if (!profile) {
-      return res.json({ ok: false }); //in the future give a better name
-    }
-
-    // Get user posts and populate them with user info and comments
-    const posts = await Post.find({ user: profile._id })
+    // Get the search profile posts and populate them with user info and comments
+    const posts = await Post.find({ user: searchProfile._id })
       .populate('user')
       .populate('comments.commentBy', 'username picture commentAt')
       .sort({ createdAt: -1 });
 
-    // Populate profile
-    await profile.populate('following', 'username picture');
-    res.json({ ...profile.toObject(), posts, user });
+    // Populate the searched profile
+    await searchProfile.populate('username picture');
+
+    // Send back the search profile info, posts and friendship
+    res.status(200).json({
+      ...searchProfile.toObject(),
+      posts,
+      friendship: {
+        friends: false,
+        following: currentUser.following.includes(searchProfile._id),
+        requestSent: false,
+        requestReceived: false,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -272,7 +278,7 @@ async function removeUserFromSearch(req, res) {
 
 
 export {
-  getUserProfile,
+ getUserProfile,
   getUserSearchHistory,
   registerUser,
   userLogin,
