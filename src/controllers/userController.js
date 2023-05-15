@@ -355,24 +355,6 @@ const updateCover = async (req, res) => {
   }
 };
 
-const updateDetails = async (req, res) => {
-  try {
-    const { infos } = req.body;
-
-    const updated = await User.findByIdAndUpdate(
-      req.user.id,
-      {
-        details: infos,
-      },
-      {
-        new: true,
-      }
-    );
-    res.json(updated.details);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
 
 
 
@@ -392,7 +374,6 @@ export {
   addUserToSearchHistory,
   removeUserFromSearch,
   upadeteUserPassword,
-  updateDetails,
   updateCover,
   updateProfilePicture,
 };
