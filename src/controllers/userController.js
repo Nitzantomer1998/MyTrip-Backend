@@ -296,6 +296,51 @@ async function shareUserPost(req, res) {
   }
 }
 
+async function getFollowingPageInfos(req, res) {
+  try {
+    const user = await User.findById(req.user.id)
+      .select('following')
+      .populate('following', 'username picture');
+
+    res.json({
+      following: user.following,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+async function getFollowersPageInfos(req, res) {
+  try {
+    const user = await User.findById(req.user.id)
+      .select('followers')
+      .populate('followers', 'username picture');
+
+    res.json({
+      followers: user.followers,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+async function updateDetails(req, res) {
+  try {
+    const { infos } = req.body;
+    const updated = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        details: infos,
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(updated.details);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
 // Export the functions
 export {
   getUserProfile,
@@ -309,4 +354,7 @@ export {
   updateProfilePicture,
   addUserToSearchHistory,
   removeUserFromSearchHistory,
+  getFollowingPageInfos,
+  getFollowersPageInfos,
+  updateDetails,
 };

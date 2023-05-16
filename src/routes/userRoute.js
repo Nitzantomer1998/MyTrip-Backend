@@ -13,6 +13,9 @@ import {
   addUserToSearchHistory,
   removeUserFromSearchHistory,
   updateProfilePicture,
+  getFollowingPageInfos,
+  getFollowersPageInfos,
+  updateDetails,
 } from '../controllers/userController.js';
 
 // Define router
@@ -41,5 +44,8 @@ router.put(
 // Need to improve this route
 router.post('/shareUserPost/:postId/:userId', userMiddleware, shareUserPost);
 
+router.get('/getFollowersPageInfos', userMiddleware, getFollowersPageInfos);
+router.get('/getFollowingPageInfos', userMiddleware, getFollowingPageInfos);
+router.put('/updateDetails', userMiddleware, updateDetails);
 // Export the router
 export default router;
