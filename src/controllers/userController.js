@@ -255,10 +255,6 @@ async function removeUserFromSearchHistory(req, res) {
 
 async function shareUserPost(req, res) {
   try {
-    console.log('share post');
-    console.log(`req.params: ${JSON.stringify(req.params)}`);
-    console.log(`req.body: ${JSON.stringify(req.body)}`);
-
     // Destructing needed fields
     const { postId, userId } = req.params;
 
@@ -270,7 +266,6 @@ async function shareUserPost(req, res) {
         select: 'username',
       });
 
-    console.log(`originalPost: ${JSON.stringify(originalPost)}`);
     if (!originalPost) {
       return res.status(404).json({ error: 'Post not found' });
     }
@@ -295,11 +290,8 @@ async function shareUserPost(req, res) {
     });
 
     await newPost.save();
-    console.log(`newnewPost: ${JSON.stringify(newPost)}`);
     res.json(newPost);
   } catch (error) {
-    console.log('bad?');
-    console.log(error);
     return res.status(500).json({ error: 'Failed to share post' });
   }
 }

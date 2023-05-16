@@ -95,9 +95,6 @@ async function commentPost(req, res) {
 }
 
 const savePost = async (req, res) => {
-  console.log('savePost function');
-  console.log(`savePost req.body: ${JSON.stringify(req.body, null, 2)}`);
-  console.log(`savePost req.user: ${JSON.stringify(req.user, null, 2)}`);
   try {
     // Destructuring needed fields
     const postId = req.params.id;
