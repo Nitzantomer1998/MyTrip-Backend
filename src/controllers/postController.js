@@ -33,3 +33,23 @@ async function getAllPosts(req, res) {
     res.status(500).json({ message: error.message });
   }
 }
+
+async function createPost(req, res) {
+  try {
+    const { user, type, background, text, images } = req.body;
+
+    const newPost = await new Post({
+      user,
+      type,
+      background,
+      text,
+      images,
+    }).save();
+
+    const populatedPost = await newPost.populate('user', 'username picture');
+
+    res.status(201).json(populatedPost);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
