@@ -79,3 +79,36 @@ async function commentPost(req, res) {
     return res.status(500).json({ message: error.message });
   }
 }
+
+const savePost = async (req, res) => {
+  console.log('savePost function');
+  console.log(`savePost req.body: ${JSON.stringify(req.body, null, 2)}`);
+  console.log(`savePost req.user: ${JSON.stringify(req.user, null, 2)}`);
+  try {
+    const postId = req.params.id;
+    const user = await User.findById(req.user.id);
+    const check = user?.savedPosts.find(
+      (post) => post.post.toString() == postId
+    );
+    if (check) {
+      await User.findByIdAndUpdate(req.user.id, {
+        $pull: {
+          savedPosts: {
+            _id: check._id,
+          },
+        },
+      });
+    } else {
+      await User.findByIdAndUpdate(req.user.id, {
+        $push: {
+          savedPosts: {
+            post: postId,
+            savedAt: new Date(),
+          },
+        },
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
