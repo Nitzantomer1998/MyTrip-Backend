@@ -1,5 +1,7 @@
+// Import needed functions
 import { Schema, ObjectId, model } from 'mongoose';
 
+// Create post schema
 const postSchema = Schema(
   {
     user: {
@@ -61,6 +63,8 @@ const postSchema = Schema(
   }
 );
 
+// Create post model
 const Post = model('Post', postSchema);
 
+// Export the model
 export default Post;
