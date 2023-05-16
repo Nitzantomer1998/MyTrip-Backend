@@ -1,20 +1,22 @@
-// Import needed packages
-import fs from 'fs';
+// Import needed functions
+import removeUnAuthorizedImage from '../helpers/removeUnAutherizedImage.js';
 
 async function imageUploadMiddleware(req, res, next) {
-  // Supported image formats
-  const supportedImageFormats = [
-    'image/jpeg',
-    'image/png',
-    'image/gif',
-    'image/webp',
-  ];
-
   try {
+    // Supported image formats
+    const supportedImageFormats = [
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'image/webp',
+    ];
+
+    // Max file size in bytes (5MB)
+    const MAX_FILE_SIZE_BYTES = 1024 * 1024 * 5;
+
     // No files were uploaded, send error message
-    if (!req.files || Object.values(req.files).flat().length === 0) {
-      return res.status(400).json({ message: 'No files have been selected' });
-    }
+    if (!req.files || Object.values(req.files).flat().length === 0)
+      return res.status(422).json({ message: 'No files have been selected' });
 
     // Get all files (images)
     const files = Object.values(req.files).flat();
@@ -23,32 +25,23 @@ async function imageUploadMiddleware(req, res, next) {
     for (const file of files) {
       // Format is not supported, remove it and send error message
       if (!supportedImageFormats.includes(file.mimetype)) {
-        removeUnauthorizedImage(file.tempFilePath);
+        removeUnAuthorizedImage(file.tempFilePath);
         return res.status(400).json({ message: 'Unsupported image format' });
       }
 
       // Size is not supported, remove it and send error message
-      if (file.size > 1024 * 1024 * 5) {
-        removeUnauthorizedImage(file.tempFilePath);
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+        removeUnAuthorizedImage(file.tempFilePath);
         return res.status(400).json({ message: 'Image size is too large' });
       }
     }
 
+    // All files are valid, continue
     next();
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 }
 
-// Assistant function to remove unauthorized images
-function removeUnauthorizedImage(path) {
-  // Remove the unauthorized image
-  fs.unlink(path, (error) => {
-    if (error) {
-      console.error(`Error removing unauthorized image: ${error.message}`);
-    }
-  });
-}
-
-// export the imageUploadMiddleware
+// Export the function
 export default imageUploadMiddleware;
