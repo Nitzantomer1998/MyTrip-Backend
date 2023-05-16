@@ -1,22 +1,20 @@
-// Import needed packages
-import express from 'express';
-
 // Import needed functions
 import userMiddleware from '../middlwares/userMiddleware.js';
 import imageUploadMiddleware from '../middlwares/imageUploadMiddleware.js';
-import { uploadImages, listImages } from '../controllers/uploadController.js';
+import { Router } from 'express';
+import { listImages, uploadImages } from '../controllers/uploadController.js';
 
 // Define router
-const router = express.Router();
+const router = Router();
 
-// Define POST routes
+// Define POST routes.
+router.post('/listImages', userMiddleware, listImages);
 router.post(
   '/uploadImages',
   userMiddleware,
   imageUploadMiddleware,
   uploadImages
 );
-router.post('/listImages', userMiddleware, listImages);
 
-// Export router
+// Export the router
 export default router;
