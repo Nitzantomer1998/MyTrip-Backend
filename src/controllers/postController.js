@@ -112,3 +112,16 @@ const savePost = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+async function deletePost(req, res) {
+  try {
+    await Post.findByIdAndRemove(req.params.id);
+
+    res.status(200).json({ message: 'Post deleted successfully' });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+export { getAllPosts, createPost, commentPost, savePost, deletePost };
+
