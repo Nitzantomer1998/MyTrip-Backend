@@ -53,3 +53,29 @@ async function createPost(req, res) {
     return res.status(500).json({ message: error.message });
   }
 }
+
+async function commentPost(req, res) {
+  try {
+    const { comment, postId } = req.body;
+
+    const newComments = await Post.findByIdAndUpdate(
+      postId,
+      {
+        $push: {
+          comments: {
+            comment: comment,
+            commentBy: req.user.id,
+            commentAt: new Date(),
+          },
+        },
+      },
+      {
+        new: true,
+      }
+    ).populate('comments.commentBy', 'username picture');
+
+    res.status(200).json(newComments.comments);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
