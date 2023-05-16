@@ -9,7 +9,7 @@
     "linter": "eslint src/*.js --color",
     "dev": "nodemon src/index.js",
     "depcheck": "npx depcheck",
-    "updates": "npx npm-check-updates"
+    "depupdate": "npx npm-check-updates"
   },
   "repository": {
     "type": "git",
@@ -37,13 +37,13 @@
     "express": "^4.18.2",
     "express-fileupload": "^1.4.0",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^7.1.0"
+    "mongoose": "^7.1.1"
   },
   "devDependencies": {
     "depcheck": "^1.4.3",
     "eslint": "^8.40.0",
     "eslint-config-google": "^0.14.0",
     "nodemon": "^2.0.22",
-    "npm-check-updates": "^16.10.10"
+    "npm-check-updates": "^16.10.12"
   }
 }
