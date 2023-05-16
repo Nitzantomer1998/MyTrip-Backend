@@ -1,15 +1,15 @@
 // Import needed packages
 import cors from 'cors';
-import dotenv from 'dotenv';
 import express from 'express';
 import fileUpload from 'express-fileupload';
+import { config } from 'dotenv';
 import { readdirSync } from 'fs';
 
 // Import needed functions
 import connectDB from './config/database.js';
 
 // Configurate environment variables
-dotenv.config();
+config();
 
 // Connect to database
 await connectDB();
