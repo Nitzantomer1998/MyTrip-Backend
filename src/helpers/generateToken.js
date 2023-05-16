@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 function generateToken(payload, expired) {
   try {
-    // Generate token and return it
+    // Generate a token and return it
     return jwt.sign(payload, process.env.TOKEN_SECRET, {
       expiresIn: expired,
     });
