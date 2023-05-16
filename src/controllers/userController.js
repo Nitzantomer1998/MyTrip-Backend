@@ -267,7 +267,7 @@ async function shareUserPost(req, res) {
       .populate('comments')
       .populate({
         path: 'user',
-        select: 'username picture',
+        select: 'username',
       });
 
     console.log(`originalPost: ${JSON.stringify(originalPost)}`);
@@ -295,9 +295,10 @@ async function shareUserPost(req, res) {
     });
 
     await newPost.save();
-
+    console.log(`newnewPost: ${JSON.stringify(newPost)}`);
     res.json(newPost);
   } catch (error) {
+    console.log('bad?');
     console.log(error);
     return res.status(500).json({ error: 'Failed to share post' });
   }
