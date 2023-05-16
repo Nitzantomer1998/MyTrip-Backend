@@ -25,9 +25,9 @@ const postSchema = Schema(
     },
 
     sharedFrom: {
-      username: {
-        type: String,
-      },
+      type: ObjectId,
+      ref: 'Post',
+      default: null,
     },
     originalUser: {
       username: {
