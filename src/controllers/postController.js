@@ -1,12 +1,16 @@
+// Import needed models
 import User from '../models/userModel.js';
 import Post from '../models/postModel.js';
 
 async function getAllPosts(req, res) {
   try {
+    // Destructuring needed fields
     const { id } = req.user;
 
+    // Find user by id and get his following
     const user = await User.findById(id).select('following');
 
+    // Get posts from user following and user
     const followingPostsPromises = user.following.map((user) => {
       return Post.find({ user })
         .populate('user', 'username picture')
@@ -15,6 +19,7 @@ async function getAllPosts(req, res) {
         .limit(10);
     });
 
+    // Get user posts and populate them with user info and comments
     const [followingPosts, userPosts] = await Promise.all([
       Promise.all(followingPostsPromises),
       Post.find({ user: id })
@@ -24,9 +29,11 @@ async function getAllPosts(req, res) {
         .limit(10),
     ]);
 
+    // Concat and sort posts
     const posts = followingPosts.flat().concat(userPosts);
     posts.sort((postA, postB) => postB.createdAt - postA.createdAt);
 
+    // Send back the posts
     res.status(200).json(posts);
   } catch (error) {
     console.error(error);
@@ -36,8 +43,10 @@ async function getAllPosts(req, res) {
 
 async function createPost(req, res) {
   try {
+    // Destructuring needed fields
     const { user, type, background, text, images } = req.body;
 
+    // Create new post
     const newPost = await new Post({
       user,
       type,
@@ -46,8 +55,10 @@ async function createPost(req, res) {
       images,
     }).save();
 
+    // Populate the new post with user info
     const populatedPost = await newPost.populate('user', 'username picture');
 
+    // Send back the created post
     res.status(201).json(populatedPost);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -56,8 +67,10 @@ async function createPost(req, res) {
 
 async function commentPost(req, res) {
   try {
+    // Destructuring needed fields
     const { comment, postId } = req.body;
 
+    // Create new comment and push it to the post, finnaly populate it with user info
     const newComments = await Post.findByIdAndUpdate(
       postId,
       {
@@ -74,6 +87,7 @@ async function commentPost(req, res) {
       }
     ).populate('comments.commentBy', 'username picture');
 
+    // Send back the new comments
     res.status(200).json(newComments.comments);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -85,6 +99,7 @@ const savePost = async (req, res) => {
   console.log(`savePost req.body: ${JSON.stringify(req.body, null, 2)}`);
   console.log(`savePost req.user: ${JSON.stringify(req.user, null, 2)}`);
   try {
+    // Destructuring needed fields
     const postId = req.params.id;
     const user = await User.findById(req.user.id);
     const check = user?.savedPosts.find(
@@ -115,13 +130,15 @@ const savePost = async (req, res) => {
 
 async function deletePost(req, res) {
   try {
+    // Find post by id and delete it
     await Post.findByIdAndRemove(req.params.id);
 
+    // Send back success message
     res.status(200).json({ message: 'Post deleted successfully' });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 }
 
+// Export the functions
 export { getAllPosts, createPost, commentPost, savePost, deletePost };
-
