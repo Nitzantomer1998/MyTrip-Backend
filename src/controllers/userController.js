@@ -341,6 +341,31 @@ async function updateDetails(req, res) {
     res.status(500).json({ message: error.message });
   }
 }
+
+async function changePassword(req, res) {
+  try {
+    const { userInfos, password } = req.body;
+    const { id } = userInfos.user;
+    console.log(`request userInfos: ${JSON.stringify(userInfos)}`);
+    console.log(`request id: ${JSON.stringify(id)}`);
+    const cryptedPassword = await hash(password, 12);
+
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        password: cryptedPassword,
+      },
+      {
+        new: true,
+      }
+    );
+    console.log(`user body: ${JSON.stringify(user)}`);
+
+    return res.status(200).json({ message: 'ok' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
 // Export the functions
 export {
   getUserProfile,
@@ -357,4 +382,5 @@ export {
   getFollowingPageInfos,
   getFollowersPageInfos,
   updateDetails,
+  changePassword,
 };
