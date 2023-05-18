@@ -16,6 +16,7 @@ import {
   getFollowingPageInfos,
   getFollowersPageInfos,
   updateDetails,
+  changePassword,
 } from '../controllers/userController.js';
 
 // Define router
@@ -29,6 +30,7 @@ router.get('/getUserSearchHistory', userMiddleware, getUserSearchHistory);
 router.post('/registerUser', registerUser);
 router.post('/userLogin', userLogin);
 router.post('/searchUser/:searchTerm', userMiddleware, searchUser);
+router.post('/changePassword', changePassword);
 
 // Define PUT routes
 router.put('/followUser/:id', userMiddleware, followUser);
