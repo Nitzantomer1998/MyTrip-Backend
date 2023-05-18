@@ -7,6 +7,7 @@ import {
   registerUser,
   userLogin,
   searchUser,
+  changePassword,
   shareUserPost,
   followUser,
   unFollowUser,
@@ -16,7 +17,6 @@ import {
   getFollowingPageInfos,
   getFollowersPageInfos,
   updateDetails,
-  changePassword,
 } from '../controllers/userController.js';
 
 // Define router
@@ -31,6 +31,7 @@ router.post('/registerUser', registerUser);
 router.post('/userLogin', userLogin);
 router.post('/searchUser/:searchTerm', userMiddleware, searchUser);
 router.post('/changePassword', changePassword);
+router.post('/shareUserPost/:postId/:userId', userMiddleware, shareUserPost);
 
 // Define PUT routes
 router.put('/followUser/:id', userMiddleware, followUser);
@@ -44,10 +45,9 @@ router.put(
 );
 
 // Need to improve this route
-router.post('/shareUserPost/:postId/:userId', userMiddleware, shareUserPost);
-
 router.get('/getFollowersPageInfos', userMiddleware, getFollowersPageInfos);
 router.get('/getFollowingPageInfos', userMiddleware, getFollowingPageInfos);
 router.put('/updateDetails', userMiddleware, updateDetails);
+
 // Export the router
 export default router;

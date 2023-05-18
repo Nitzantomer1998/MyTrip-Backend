@@ -139,6 +139,72 @@ async function searchUser(req, res) {
   }
 }
 
+async function changePassword(req, res) {
+  try {
+    // Destructuring needed fields
+    const { userInfos, password } = req.body;
+    const { id } = userInfos.user;
+
+    // Find user by id and update his password
+    await User.findByIdAndUpdate(
+      id,
+      {
+        password: await hash(password, 12),
+      },
+      {
+        new: true,
+      }
+    );
+
+    // Send back success message
+    return res.status(200).json({ message: 'ok' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+async function shareUserPost(req, res) {
+  try {
+    // Destructing needed fields
+    const { postId, userId } = req.params;
+
+    // Find the original post
+    const originalPost = await Post.findById(postId)
+      .populate('comments')
+      .populate({
+        path: 'user',
+        select: 'username',
+      });
+
+    // Find the user who shared the post
+    const sharingUser = await User.findById(userId, 'username');
+
+    // Create new post
+    const newPost = new Post({
+      post: postId,
+      user: userId,
+      sharedFrom: postId,
+      text: originalPost.text,
+      images: originalPost.images,
+      background: originalPost.background,
+      originalUser: {
+        username: originalPost.user.username,
+      },
+      sharingUser: {
+        username: sharingUser.username,
+      },
+    });
+
+    // Save the new post
+    await newPost.save();
+
+    // Send back the new post
+    res.json(newPost);
+  } catch (error) {
+    return res.status(500).json({ error: 'Failed to share post' });
+  }
+}
+
 async function followUser(req, res) {
   try {
     // Getting the sender and receiver
@@ -253,49 +319,6 @@ async function removeUserFromSearchHistory(req, res) {
   }
 }
 
-async function shareUserPost(req, res) {
-  try {
-    // Destructing needed fields
-    const { postId, userId } = req.params;
-
-    // Récupérer le post d'origine avec les commentaires et les informations de l'utilisateur
-    const originalPost = await Post.findById(postId)
-      .populate('comments')
-      .populate({
-        path: 'user',
-        select: 'username',
-      });
-
-    if (!originalPost) {
-      return res.status(404).json({ error: 'Post not found' });
-    }
-
-    // Récupérer les informations de l'utilisateur qui effectue la demande de partage
-    const sharingUser = await User.findById(userId, 'username');
-
-    // Créer le nouveau post partagé en incluant les commentaires, le texte du post d'origine et les noms d'utilisateur
-    const newPost = new Post({
-      post: postId,
-      user: userId,
-      sharedFrom: postId,
-      text: originalPost.text,
-      images: originalPost.images,
-      background: originalPost.background,
-      originalUser: {
-        username: originalPost.user.username,
-      },
-      sharingUser: {
-        username: sharingUser.username,
-      },
-    });
-
-    await newPost.save();
-    res.json(newPost);
-  } catch (error) {
-    return res.status(500).json({ error: 'Failed to share post' });
-  }
-}
-
 async function getFollowingPageInfos(req, res) {
   try {
     const user = await User.findById(req.user.id)
@@ -342,30 +365,6 @@ async function updateDetails(req, res) {
   }
 }
 
-async function changePassword(req, res) {
-  try {
-    const { userInfos, password } = req.body;
-    const { id } = userInfos.user;
-    console.log(`request userInfos: ${JSON.stringify(userInfos)}`);
-    console.log(`request id: ${JSON.stringify(id)}`);
-    const cryptedPassword = await hash(password, 12);
-
-    const user = await User.findByIdAndUpdate(
-      id,
-      {
-        password: cryptedPassword,
-      },
-      {
-        new: true,
-      }
-    );
-    console.log(`user body: ${JSON.stringify(user)}`);
-
-    return res.status(200).json({ message: 'ok' });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-}
 // Export the functions
 export {
   getUserProfile,
@@ -373,6 +372,7 @@ export {
   registerUser,
   userLogin,
   searchUser,
+  changePassword,
   shareUserPost,
   followUser,
   unFollowUser,
@@ -382,5 +382,4 @@ export {
   getFollowingPageInfos,
   getFollowersPageInfos,
   updateDetails,
-  changePassword,
 };
