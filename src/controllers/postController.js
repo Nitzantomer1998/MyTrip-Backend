@@ -138,5 +138,65 @@ async function deletePost(req, res) {
   }
 }
 
+async function getPostsByLocation(req, res) {
+  const location = req.params.location;
+
+  try {
+    console.log(location + 'backend getpostsbylocation');
+    const posts = await Post.find({ location: location })
+      .populate('user')
+      .populate('comments.commentBy');
+
+    if (posts.length === 0) {
+      return res
+        .status(404)
+        .json({ message: 'No posts found with this location.' });
+    }
+
+    res.status(200).json(posts);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+async function getUniqueLocations(req, res) {
+  try {
+    const locations = await Post.distinct('location');
+
+    if (locations.length === 0) {
+      return res.status(404).json({ message: 'No locations found.' });
+    }
+
+    res.status(200).json(locations);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+async function searchPostByLocation(req, res) {
+  try {
+    // Destructuring needed fields
+    const { searchTerm } = req.params;
+
+    // Find posts by searchTerm and get the location
+    const searchedPost = await Post.find({
+      location: new RegExp(`^${searchTerm}`, 'i'),
+    });
+
+    // Send back the searched posts
+    res.status(200).json(searchedPost);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 // Export the functions
-export { getAllPosts, createPost, commentPost, savePost, deletePost };
+export {
+  getAllPosts,
+  createPost,
+  commentPost,
+  savePost,
+  deletePost,
+  getPostsByLocation,
+  getUniqueLocations,
+};
