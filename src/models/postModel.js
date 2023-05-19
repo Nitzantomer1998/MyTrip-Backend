@@ -17,6 +17,10 @@ const postSchema = Schema(
     background: {
       type: String,
     },
+    location: {
+      type: String,
+      default: null,
+    },
     text: {
       type: String,
     },

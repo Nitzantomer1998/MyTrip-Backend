@@ -67,7 +67,7 @@ router.get(
 ); //
 
 // Define DELETE routes
-router.delete('/deleteUser/:id', deleteUser);
+router.delete('/deleteUser', userMiddleware, deleteUser);
 
 // Export the router
 export default router;

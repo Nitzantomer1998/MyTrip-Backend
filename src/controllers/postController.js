@@ -44,13 +44,14 @@ async function getAllPosts(req, res) {
 async function createPost(req, res) {
   try {
     // Destructuring needed fields
-    const { user, type, background, text, images } = req.body;
+    const { user, type, background, location, text, images } = req.body;
 
     // Create new post
     const newPost = await new Post({
       user,
       type,
       background,
+      location,
       text,
       images,
     }).save();

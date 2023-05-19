@@ -412,7 +412,7 @@ async function getFriendsPageInfos(req, res) {
 
 async function deleteUser(req, res) {
   try {
-    const { id: userId } = req.params;
+    const { id: userId } = req.user;
     console.log(`Deleting user ${userId}`);
     // Delete user's comments
     await Post.updateMany(
