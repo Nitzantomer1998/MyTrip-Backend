@@ -364,7 +364,50 @@ async function updateDetails(req, res) {
     res.status(500).json({ message: error.message });
   }
 }
+async function getFollowersPageInfosId(req, res) {
+  console.log('REACHED GETFOLLOWERSPAGEINFOID');
+  console.log(req.params.id);
+  try {
+    const user = await User.findById(req.params.id)
+      .select('followers')
+      .populate('followers', 'username picture');
+    res.json({ followers: user.followers });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+} //
 
+async function getFollowingPageInfosId(req, res) {
+  console.log('REACHED GETFOLLOWINGPAGEINFOID');
+  console.log(req.params.id);
+  try {
+    const user = await User.findById(req.params.id)
+      .select('following')
+      .populate('following', 'picture username');
+    res.json({ following: user.following });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+} //
+
+async function getFriendsPageInfos(req, res) {
+  try {
+    const user = await User.findById(req.user.id)
+      .select('friends requests')
+      .populate('friends', 'picture username')
+      .populate('requests', 'picture username');
+    const sentRequests = await User.find({
+      requests: mongoose.Types.ObjectId(req.user.id),
+    }).select('picture username');
+    res.json({
+      friends: user.friends,
+      requests: user.requests,
+      sentRequests,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
 // Export the functions
 export {
   getUserProfile,
@@ -382,4 +425,7 @@ export {
   getFollowingPageInfos,
   getFollowersPageInfos,
   updateDetails,
+  getFollowersPageInfosId,
+  getFriendsPageInfos,
+  getFollowingPageInfosId,
 };

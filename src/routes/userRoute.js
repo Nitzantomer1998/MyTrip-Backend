@@ -17,6 +17,9 @@ import {
   getFollowingPageInfos,
   getFollowersPageInfos,
   updateDetails,
+  getFollowersPageInfosId,
+  getFollowingPageInfosId,
+  getFriendsPageInfos,
 } from '../controllers/userController.js';
 
 // Define router
@@ -48,6 +51,19 @@ router.put(
 router.get('/getFollowersPageInfos', userMiddleware, getFollowersPageInfos);
 router.get('/getFollowingPageInfos', userMiddleware, getFollowingPageInfos);
 router.put('/updateDetails', userMiddleware, updateDetails);
+
+router.get('/getFriendsPageInfos', userMiddleware, getFriendsPageInfos);
+
+router.get(
+  '/getFollowersPageInfosId/:id',
+  userMiddleware,
+  getFollowersPageInfosId
+); //
+router.get(
+  '/getFollowingPageInfosId/:id',
+  userMiddleware,
+  getFollowingPageInfosId
+); //
 
 // Export the router
 export default router;
