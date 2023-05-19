@@ -1,31 +1,31 @@
 // Import needed packages
+import fs from 'fs';
 import cors from 'cors';
+import dotenv from 'dotenv';
 import express from 'express';
 import fileUpload from 'express-fileupload';
-import { config } from 'dotenv';
-import { readdirSync } from 'fs';
 
-// Import needed functions
+// Import needed function
 import connectDB from './config/database.js';
 
-// Configurate environment variables
-config();
+// Set up dotenv configuartion
+dotenv.config();
 
-// Connect to database
+// Set up database connection
 await connectDB();
 
-// Connect to express
+// Set up express app
 const app = express();
 
-// Define express middlewares
+// Set up express middlewares
 app.use(express.json());
 app.use(cors({ origin: process.env.BASE_URL, credentials: true }));
 app.use(fileUpload({ useTempFiles: true }));
 
-// Define Routes
-readdirSync('./src/routes').map(async (route) =>
+// Set up dynamic route classifier
+fs.readdirSync('./src/routes').map(async (route) =>
   app.use('/', (await import(`./routes/${route}`)).default)
 );
 
-// Define server listening port
+// Set up server listener
 app.listen(process.env.PORT, () => console.log('Server Connected'));
