@@ -20,6 +20,7 @@ import {
   getFollowersPageInfosId,
   getFollowingPageInfosId,
   getFriendsPageInfos,
+  deleteUser,
 } from '../controllers/userController.js';
 
 // Define router
@@ -64,6 +65,9 @@ router.get(
   userMiddleware,
   getFollowingPageInfosId
 ); //
+
+// Define DELETE routes
+router.delete('/deleteUser/:id', deleteUser);
 
 // Export the router
 export default router;

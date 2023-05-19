@@ -1,6 +1,7 @@
 // Import needed models
 import User from '../models/userModel.js';
 import Post from '../models/postModel.js';
+import Reaction from '../models/reactionModel.js';
 
 // Import needed functions
 import generateToken from '../helpers/generateToken.js';
@@ -408,6 +409,39 @@ async function getFriendsPageInfos(req, res) {
     res.status(500).json({ message: error.message });
   }
 }
+
+async function deleteUser(req, res) {
+  try {
+    const { id: userId } = req.params;
+    console.log(`Deleting user ${userId}`);
+    // Delete user's comments
+    await Post.updateMany(
+      { 'comments.commentBy': userId },
+      { $pull: { comments: { commentBy: userId } } }
+    );
+
+    // Delete user's reactions
+    await Reaction.deleteMany({ reactBy: userId });
+
+    const deletedUser = await User.findById(userId);
+    // Delete user from friends' following and followers lists
+    await User.updateMany(
+      { $or: [{ following: userId }, { followers: userId }] },
+      { $pull: { following: userId, followers: userId } }
+    );
+
+    await Post.deleteMany({ 'originalUser.username': deletedUser.username });
+    // Delete user's posts
+    await Post.deleteMany({ user: userId });
+
+    // Delete the user
+    await User.findByIdAndDelete(userId);
+
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting user and associated data:', error);
+  }
+}
 // Export the functions
 export {
   getUserProfile,
@@ -428,4 +462,5 @@ export {
   getFollowersPageInfosId,
   getFriendsPageInfos,
   getFollowingPageInfosId,
+  deleteUser,
 };
