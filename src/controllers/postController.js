@@ -4,80 +4,78 @@ import Post from '../models/postModel.js';
 
 async function getAllPosts(req, res) {
   try {
-    // Destructuring needed fields
-    const { id } = req.user;
+    // Get the current user's following list
+    const currentUser = await User.findById({ _id: req.user.id }).select(
+      'following'
+    );
 
-    // Find user by id and get his following
-    const user = await User.findById(id).select('following');
+    // Get posts from user following
+    const followingPostsPromise = Post.find({
+      user: { $in: currentUser.following },
+    })
+      .populate('user', 'username picture')
+      .populate('comments.commentBy', 'username picture')
+      .sort('-createdAt')
+      .limit(10)
+      .lean();
 
-    // Get posts from user following and user
-    const followingPostsPromises = user.following.map((user) => {
-      return Post.find({ user })
-        .populate('user', 'username picture')
-        .populate('comments.commentBy', 'username picture')
-        .sort('-createdAt')
-        .limit(10);
-    });
+    // Get posts from user
+    const userPostsPromise = Post.find({ user: req.user.id })
+      .populate('user', 'username picture')
+      .populate('comments.commentBy', 'username picture')
+      .sort('-createdAt')
+      .limit(10)
+      .lean();
 
-    // Get user posts and populate them with user info and comments
+    // Wait for both queries to complete
     const [followingPosts, userPosts] = await Promise.all([
-      Promise.all(followingPostsPromises),
-      Post.find({ user: id })
-        .populate('user', 'username picture')
-        .populate('comments.commentBy', 'username picture')
-        .sort('-createdAt')
-        .limit(10),
+      followingPostsPromise,
+      userPostsPromise,
     ]);
 
-    // Concat and sort posts
-    const posts = followingPosts.flat().concat(userPosts);
-    posts.sort((postA, postB) => postB.createdAt - postA.createdAt);
+    // Combine and sort posts
+    const posts = [...followingPosts, ...userPosts].sort(
+      (postA, postB) => postB.createdAt - postA.createdAt
+    );
 
     // Send back the posts
-    res.status(200).json(posts);
+    res.json(posts);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    console.error(`getAllPosts Error: ${error.message}`);
   }
 }
 
 async function createPost(req, res) {
   try {
-    // Destructuring needed fields
-    const { user, type, background, location, text, images } = req.body;
-
-    // Create new post
-    const newPost = await new Post({
-      user,
-      type,
-      background,
-      location,
-      text,
-      images,
-    }).save();
+    // Create the new post
+    const newPost = await Post.create({
+      user: req.user.id,
+      location: req.body.location,
+      text: req.body.text,
+      images: req.body.images,
+      type: req.body.type,
+      background: req.body.background,
+    });
 
     // Populate the new post with user info
     const populatedPost = await newPost.populate('user', 'username picture');
 
     // Send back the created post
-    res.status(201).json(populatedPost);
+    res.json(populatedPost);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.error(`createPost Error: ${error.message}`);
   }
 }
 
 async function commentPost(req, res) {
   try {
-    // Destructuring needed fields
-    const { comment, postId } = req.body;
-
-    // Create new comment and push it to the post, finnaly populate it with user info
+    // Find post and insert the comment, then populate the commentBy field
     const newComments = await Post.findByIdAndUpdate(
-      postId,
+      { _id: req.body.postId },
       {
         $push: {
           comments: {
-            comment: comment,
+            comment: req.body.comment,
             commentBy: req.user.id,
             commentAt: new Date(),
           },
@@ -89,9 +87,21 @@ async function commentPost(req, res) {
     ).populate('comments.commentBy', 'username picture');
 
     // Send back the new comments
-    res.status(200).json(newComments.comments);
+    res.json(newComments.comments);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.error(`commentPost Error: ${error.message}`);
+  }
+}
+
+async function deletePost(req, res) {
+  try {
+    // Get the post and delete it
+    await Post.findByIdAndRemove({ _id: req.params.id });
+
+    // Send back success message
+    res.json({ message: 'Post deleted successfully' });
+  } catch (error) {
+    console.error(`deletePost Error: ${error.message}`);
   }
 }
 
@@ -125,18 +135,6 @@ const savePost = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
-async function deletePost(req, res) {
-  try {
-    // Find post by id and delete it
-    await Post.findByIdAndRemove(req.params.id);
-
-    // Send back success message
-    res.status(200).json({ message: 'Post deleted successfully' });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-}
 
 async function getPostsByLocation(req, res) {
   const location = req.params.location;
@@ -225,8 +223,8 @@ export {
   getAllPosts,
   createPost,
   commentPost,
-  savePost,
   deletePost,
+  savePost,
   getPostsByLocation,
   getUniqueLocations,
   getAllPostsSaved,
