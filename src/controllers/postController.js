@@ -218,6 +218,145 @@ async function getAllPostsSaved(req, res) {
   }
 }
 
+async function postReaction(req, res) {
+  try {
+    if (req.body.react === 'like') {
+      // Find the post by postId and update it
+      await Post.findByIdAndUpdate(
+        { _id: req.body.postId },
+        {
+          $push: { likes: { like: req.user.id, likeAt: new Date() } },
+        }
+      );
+
+      await User.findByIdAndUpdate(
+        { _id: req.user.id },
+        {
+          $push: { likedPosts: { post: req.body.postId, likedAt: new Date() } },
+        }
+      );
+
+      // Send back success message
+      return res.json({ message: 'User liked post successfully' });
+    } else {
+      // Find the post by postId and update it
+      await Post.findByIdAndUpdate(
+        { _id: req.body.postId },
+        {
+          $push: { recommends: { recommend: req.user.id, likeAt: new Date() } },
+        }
+      );
+
+      await User.findByIdAndUpdate(
+        { _id: req.user.id },
+        {
+          $push: {
+            recommendedPosts: {
+              post: req.body.postId,
+              recommendedAt: new Date(),
+            },
+          },
+        }
+      );
+
+      // Send back success message
+      return res.json({ message: 'User recommended post successfully' });
+    }
+  } catch (error) {
+    console.error(`postReaction Error: ${error.message}`);
+  }
+}
+
+async function getAllPostsLiked(req, res) {
+  try {
+    // Trouver l'utilisateur par son nom d'utilisateur
+    const user = await User.findOne({ username: req.params.username });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    //console.log('User:', user);
+
+    // Obtenir la liste des posts sauvegardés
+    const likedPostIds = user.likedPosts.map(
+      (likedPostObj) => likedPostObj.post
+    );
+    const likedPosts = await Post.find({ _id: { $in: likedPostIds } })
+      .populate('user', 'username picture')
+      .populate('comments.commentBy', 'username picture')
+      .sort({ createdAt: -1 });
+
+    console.log('liked Posts:', likedPosts);
+
+    // Renvoyer la liste des posts sauvegardés
+    res.status(200).json(likedPosts);
+  } catch (error) {
+    //console.error('Error:', error);
+
+    res.status(500).json({ message: error.message });
+  }
+}
+
+async function getAllPostsRecommended(req, res) {
+  try {
+    // Trouver l'utilisateur par son nom d'utilisateur
+    const user = await User.findOne({ username: req.params.username });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    //console.log('User:', user);
+
+    // Obtenir la liste des posts sauvegardés
+    const recommendedPostIds = user.recommendedPosts.map(
+      (recommendedPostObj) => recommendedPostObj.post
+    );
+    const recommendedPosts = await Post.find({
+      _id: { $in: recommendedPostIds },
+    })
+      .populate('user', 'username picture')
+      .populate('comments.commentBy', 'username picture')
+      .sort({ createdAt: -1 });
+
+    console.log('recommended Posts:', recommendedPosts);
+
+    // Renvoyer la liste des posts sauvegardés
+    res.status(200).json(recommendedPosts);
+  } catch (error) {
+    //console.error('Error:', error);
+
+    res.status(500).json({ message: error.message });
+  }
+}
+
+async function getPostLikes(req, res) {
+  try {
+    // Find the post by postId and populate the 'likes' field with user documents
+    const currentPost = await Post.findById(req.body.postId)
+      .select('likes.like')
+      .populate('likes.like', 'username picture');
+
+    // Send back the current user followers
+    res.json({ likes: currentPost.likes });
+  } catch (error) {
+    console.error(`getPostLikes Error: ${error}`);
+  }
+}
+
+async function getPostRecommended(req, res) {
+  try {
+    // Find the post by postId and populate the 'likes' field with user documents
+    const post = await Post.findById(req.body.postId)
+      .select('recommends.recommend')
+      .populate('recommends.recommend', 'username picture');
+
+    // Send back the current user followers
+    res.json({ recommends: currentPost.recommends });
+  } catch (error) {
+    console.error(`getPostRecommended Error: ${error}`);
+  }
+}
+
 // Export the functions
 export {
   getAllPosts,
@@ -228,4 +367,9 @@ export {
   getPostsByLocation,
   getUniqueLocations,
   getAllPostsSaved,
+  postReaction,
+  getAllPostsRecommended,
+  getAllPostsLiked,
+  getPostLikes,
+  getPostRecommended,
 };
