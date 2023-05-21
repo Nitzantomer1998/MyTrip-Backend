@@ -1,10 +1,10 @@
-// Import needed packages
+// Import needed package
 import cloudinary from 'cloudinary';
 
 // Import needed function
 import removeUnAuthorizedImage from '../helpers/removeUnAutherizedImage.js';
 
-// Configure cloudinary
+// Set up cloudinary configuration
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUD_API_KEY,
@@ -13,37 +13,33 @@ cloudinary.config({
 
 async function listImages(req, res) {
   try {
-    // Destructuring needed fields
-    const { path, sort, max } = req.body;
-
-    // Find user by searchTerm and get his username and picture
+    // Get user posts from cloudinary
     const userPosts = await cloudinary.v2.search
-      .expression(`${path}`)
-      .sort_by('created_at', `${sort}`)
-      .max_results(max)
+      .expression(`${req.body.path}`)
+      .sort_by('created_at', `${req.body.sort}`)
+      .max_results(req.body.max)
       .execute();
 
     // Send back the user posts
-    res.status(200).json(userPosts);
+    res.json(userPosts);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.error(`listImages Error: ${error.message}`);
   }
 }
 
-const uploadImages = async (req, res) => {
+async function uploadImages(req, res) {
   try {
-    // Destructuring needed fields
-    const { path } = req.body;
+    // Get all files from request
     const files = Object.values(req.files).flat();
 
     // Upload images to cloudinary
     const imageUploadPromises = files.map(async (file) => {
       try {
-        const url = await uploadToCloudinary(file, path);
+        const url = await uploadToCloudinary(file, req.body.path);
         removeUnAuthorizedImage(file.tempFilePath);
         return url;
       } catch (error) {
-        console.error(error);
+        console.error(`uploadImages Error: ${error.message}`);
         removeUnAuthorizedImage(file.tempFilePath);
         return null;
       }
@@ -54,12 +50,11 @@ const uploadImages = async (req, res) => {
     const validImages = uploadedImages.filter((url) => url !== null);
 
     // Send back the uploaded images
-    res.status(200).json(validImages);
+    res.json(validImages);
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: error.message });
+    console.error(`uploadImages Error: ${error.message}`);
   }
-};
+}
 
 async function uploadToCloudinary(file, path) {
   try {
@@ -72,6 +67,7 @@ async function uploadToCloudinary(file, path) {
     return { url: imageUrl.secure_url };
   } catch (error) {
     removeUnAuthorizedImage(file.tempFilePath);
+    console.error(`uploadToCloudinary Error: ${error.message}`);
     throw new Error('Error: Image upload failed');
   }
 }
