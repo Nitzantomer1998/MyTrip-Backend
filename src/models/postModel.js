@@ -9,14 +9,6 @@ const postSchema = Schema(
       ref: 'User',
       required: true,
     },
-    type: {
-      type: String,
-      enum: ['profilePicture', null],
-      default: null,
-    },
-    background: {
-      type: String,
-    },
     location: {
       type: String,
       default: null,
@@ -26,6 +18,14 @@ const postSchema = Schema(
     },
     images: {
       type: Array,
+    },
+    type: {
+      type: String,
+      enum: ['profilePicture', null],
+      default: null,
+    },
+    background: {
+      type: String,
     },
 
     sharedFrom: {
