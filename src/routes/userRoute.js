@@ -1,73 +1,61 @@
+// Import needed package
+import express from 'express';
+
 // Import needed functions
 import userMiddleware from '../middlwares/userMiddleware.js';
-import { Router } from 'express';
 import {
   getUserProfile,
   getUserSearchHistory,
+  getUserFollowersPage,
+  getUserFollowingPage,
   registerUser,
   userLogin,
   searchUser,
-  changePassword,
+  changeUserPassword,
   shareUserPost,
+  updateDetails,
   followUser,
   unFollowUser,
   addUserToSearchHistory,
   removeUserFromSearchHistory,
-  updateProfilePicture,
-  getFollowingPageInfos,
-  getFollowersPageInfos,
-  updateDetails,
-  getFollowersPageInfosId,
-  getFollowingPageInfosId,
-  getFriendsPageInfos,
+  updateUserProfilePicture,
   deleteUser,
 } from '../controllers/userController.js';
 
-// Define router
-const router = Router();
+// Set up router
+const router = express.Router();
 
-// Define GET routes
-router.get('/getUserProfile/:username', userMiddleware, getUserProfile); // Get rid of "freindship"
-router.get('/getUserSearchHistory', userMiddleware, getUserSearchHistory);
+// Set up GET routes
+router.get('/getUserProfile/:username', userMiddleware, getUserProfile); // Get rid of "freindship", the return profile page contain all the user information = BAD!!!!
+router.get('/getUserSearchHistory', userMiddleware, getUserSearchHistory); // Finished
+router.get('/getUserFollowersPage/:id', getUserFollowersPage); //Why userMiddleware doesnt work
+router.get('/getUserFollowingPage/:id', getUserFollowingPage); //Why userMiddleware doesnt work
 
-// Define POST routes
-router.post('/registerUser', registerUser);
-router.post('/userLogin', userLogin);
-router.post('/searchUser/:searchTerm', userMiddleware, searchUser);
-router.post('/changePassword', changePassword);
-router.post('/shareUserPost/:postId/:userId', userMiddleware, shareUserPost);
+// Set up POST routes
+router.post('/registerUser', registerUser); // cancel sending back error messages
+router.post('/userLogin', userLogin); // cancel sending back error messages
+router.post('/searchUser/:username', userMiddleware, searchUser); // Finished
+router.post('/changeUserPassword', userMiddleware, changeUserPassword); // Finished
+router.post('/shareUserPost/:postId/:userId', userMiddleware, shareUserPost); // First mockup, will be need alot of adjustment later
 
-// Define PUT routes
-router.put('/followUser/:id', userMiddleware, followUser);
-router.put('/unFollowUser/:id', userMiddleware, unFollowUser);
-router.put('/updateProfilePicture', userMiddleware, updateProfilePicture);
-router.put('/addUserToSearchHistory', userMiddleware, addUserToSearchHistory);
+// Set up PUT routes
+router.put('/updateDetails', userMiddleware, updateDetails); // Update in the future -> details field is useless
+router.put('/followUser/:id', userMiddleware, followUser); // Finished
+router.put('/unFollowUser/:id', userMiddleware, unFollowUser); // Finished
+router.put(
+  '/updateUserProfilePicture',
+  userMiddleware,
+  updateUserProfilePicture
+); // Finished
+router.put('/addUserToSearchHistory', userMiddleware, addUserToSearchHistory); // Finished
 router.put(
   '/removeUserFromSearchHistory',
   userMiddleware,
   removeUserFromSearchHistory
-);
+); // Finished
 
-// Need to improve this route
-router.get('/getFollowersPageInfos', userMiddleware, getFollowersPageInfos);
-router.get('/getFollowingPageInfos', userMiddleware, getFollowingPageInfos);
-router.put('/updateDetails', userMiddleware, updateDetails);
-
-router.get('/getFriendsPageInfos', userMiddleware, getFriendsPageInfos);
-
-router.get(
-  '/getFollowersPageInfosId/:id',
-  // userMiddleware,
-  getFollowersPageInfosId
-); //
-router.get(
-  '/getFollowingPageInfosId/:id',
-  // userMiddleware,
-  getFollowingPageInfosId
-); //
-
-// Define DELETE routes
-router.delete('/deleteUser', userMiddleware, deleteUser);
+// Set up DELETE routes
+router.delete('/deleteUser', userMiddleware, deleteUser); // Finished
 
 // Export the router
 export default router;
