@@ -1,11 +1,11 @@
-// Import needed functions
-import { Schema, ObjectId, model } from 'mongoose';
+// Import needed package
+import mongoose from 'mongoose';
 
 // Create post schema
-const postSchema = Schema(
+const postSchema = mongoose.Schema(
   {
     user: {
-      type: ObjectId,
+      type: mongoose.ObjectId,
       ref: 'User',
       required: true,
     },
@@ -29,7 +29,7 @@ const postSchema = Schema(
     },
 
     sharedFrom: {
-      type: ObjectId,
+      type: mongoose.ObjectId,
       ref: 'Post',
       default: null,
     },
@@ -45,6 +45,31 @@ const postSchema = Schema(
       },
     },
 
+    recommends: [
+      {
+        recommend: {
+          type: mongoose.ObjectId,
+          ref: 'User',
+        },
+        recommendAt: {
+          type: Date,
+          required: true,
+        },
+      },
+    ],
+    likes: [
+      {
+        like: {
+          type: mongoose.ObjectId,
+          ref: 'User',
+        },
+
+        likeAt: {
+          type: Date,
+          required: true,
+        },
+      },
+    ],
     comments: [
       {
         comment: {
@@ -52,7 +77,7 @@ const postSchema = Schema(
         },
 
         commentBy: {
-          type: ObjectId,
+          type: mongoose.ObjectId,
           ref: 'User',
         },
         commentAt: {
@@ -68,7 +93,7 @@ const postSchema = Schema(
 );
 
 // Create post model
-const Post = model('Post', postSchema);
+const Post = mongoose.model('Post', postSchema);
 
 // Export the model
 export default Post;
