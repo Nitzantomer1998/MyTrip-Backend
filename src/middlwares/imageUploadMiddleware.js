@@ -1,4 +1,4 @@
-// Import needed functions
+// Import needed function
 import removeUnAuthorizedImage from '../helpers/removeUnAutherizedImage.js';
 
 async function imageUploadMiddleware(req, res, next) {
@@ -39,7 +39,7 @@ async function imageUploadMiddleware(req, res, next) {
     // All files are valid, continue
     next();
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.error(`imageUploadMiddleware Error: ${error.message}`);
   }
 }
 
