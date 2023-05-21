@@ -64,33 +64,5 @@ async function getPostReactions(req, res) {
   }
 }
 
-async function postReaction(req, res) {
-  try {
-    const { postId, react } = req.body;
-    const check = await Reaction.findOne({
-      postRef: postId,
-      reactBy: req.user.id,
-    });
-    if (check == null) {
-      const newReact = new Reaction({
-        react: react,
-        postRef: postId,
-        reactBy: req.user.id,
-      });
-      await newReact.save();
-    } else {
-      if (check.react == react) {
-        await Reaction.findByIdAndRemove(check._id);
-      } else {
-        await Reaction.findByIdAndUpdate(check._id, {
-          react: react,
-        });
-      }
-    }
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-}
-
 // Export the functions
-export { getPostReactions, postReaction };
+export { getPostReactions };
