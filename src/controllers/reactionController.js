@@ -2,9 +2,6 @@
 import Reaction from '../models/reactionModel.js';
 import User from '../models/userModel.js';
 
-// Import neede packages
-import mongoose from 'mongoose';
-
 async function getPostReactions(req, res) {
   try {
     const reactsArray = await Reaction.find({ postRef: req.params.id });
