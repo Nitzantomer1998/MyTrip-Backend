@@ -57,12 +57,12 @@ router.get('/getFriendsPageInfos', userMiddleware, getFriendsPageInfos);
 
 router.get(
   '/getFollowersPageInfosId/:id',
-  userMiddleware,
+  // userMiddleware,
   getFollowersPageInfosId
 ); //
 router.get(
   '/getFollowingPageInfosId/:id',
-  userMiddleware,
+  // userMiddleware,
   getFollowingPageInfosId
 ); //
 
