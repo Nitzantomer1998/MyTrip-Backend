@@ -27,8 +27,8 @@ async function getPostReactions(req, res) {
         count: newReacts.like ? newReacts.like.length : 0,
       },
       {
-        react: 'love',
-        count: newReacts.love ? newReacts.love.length : 0,
+        react: 'recommend',
+        count: newReacts.recommend ? newReacts.recommend.length : 0,
       },
       {
         react: 'haha',

@@ -5,7 +5,7 @@ import { Schema, ObjectId, model } from 'mongoose';
 const reactionSchema = Schema({
   react: {
     type: String,
-    enum: ['like', 'love', 'haha', 'sad', 'angry', 'wow'],
+    enum: ['like', 'recommend', 'haha', 'sad', 'angry', 'wow'],
     required: true,
   },
   postRef: {
