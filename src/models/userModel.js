@@ -1,8 +1,8 @@
-// Import needed functions
-import { Schema, ObjectId, model } from 'mongoose';
+// Import needed package
+import mongoose from 'mongoose';
 
 // Create user schema
-const userSchema = Schema(
+const userSchema = mongoose.Schema(
   {
     username: {
       type: String,
@@ -36,24 +36,36 @@ const userSchema = Schema(
 
     following: [
       {
-        type: ObjectId,
+        type: mongoose.ObjectId,
         ref: 'User',
       },
     ],
     followers: [
       {
-        type: ObjectId,
+        type: mongoose.ObjectId,
         ref: 'User',
       },
     ],
 
+    likedPosts: [
+      {
+        post: {
+          type: mongoose.ObjectId,
+          ref: 'Post',
+        },
+        likedAt: {
+          type: Date,
+          required: true,
+        },
+      },
+    ],
     recommendedPosts: [
       {
         post: {
-          type: ObjectId,
+          type: mongoose.ObjectId,
           ref: 'Post',
         },
-        savedAt: {
+        recommendedAt: {
           type: Date,
           required: true,
         },
@@ -62,19 +74,7 @@ const userSchema = Schema(
     savedPosts: [
       {
         post: {
-          type: ObjectId,
-          ref: 'Post',
-        },
-        savedAt: {
-          type: Date,
-          required: true,
-        },
-      },
-    ],
-    likedPosts: [
-      {
-        post: {
-          type: ObjectId,
+          type: mongoose.ObjectId,
           ref: 'Post',
         },
         savedAt: {
@@ -87,7 +87,7 @@ const userSchema = Schema(
     search: [
       {
         user: {
-          type: ObjectId,
+          type: mongoose.ObjectId,
           ref: 'User',
           required: true,
         },
@@ -105,7 +105,7 @@ const userSchema = Schema(
 );
 
 // Create user model
-const User = model('User', userSchema);
+const User = mongoose.model('User', userSchema);
 
 // Export the model
 export default User;
