@@ -1,11 +1,10 @@
-// Import needed function
-import { unlink } from 'fs';
+// Import needed package
+import fs from 'fs';
 
 function removeUnAuthorizedImage(path) {
   // Remove the unauthorized image
-  unlink(path, (error) => {
-    if (error)
-      console.error(`Error removing unauthorized image: ${error.message}`);
+  fs.unlink(path, (error) => {
+    if (error) console.error(`removeUnAuthorizedImage Error: ${error.message}`);
   });
 }
 
