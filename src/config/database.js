@@ -1,5 +1,5 @@
-// Import needed function
-import { connect } from 'mongoose';
+// Import needed package
+import mongoose from 'mongoose';
 
 async function connectDB() {
   try {
@@ -10,7 +10,7 @@ async function connectDB() {
     };
 
     // Connect to the database
-    await connect(process.env.DATABASE_URL, options);
+    await mongoose.connect(process.env.DATABASE_URL, options);
     console.log('Database Connected');
   } catch (error) {
     console.log(`Database Failed: ${error.message}`);
