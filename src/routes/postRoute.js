@@ -12,6 +12,11 @@ import {
   getPostsByLocation,
   getUniqueLocations,
   getAllPostsSaved,
+  postReaction,
+  getAllPostsRecommended,
+  getAllPostsLiked,
+  getPostLikes,
+  getPostRecommended,
 } from '../controllers/postController.js';
 
 // Set up router
@@ -34,6 +39,11 @@ router.get('/posts/location/:location', userMiddleware, getPostsByLocation);
 router.get('/posts/locations', getUniqueLocations);
 router.get('/getAllPostsSaved/:username', getAllPostsSaved);
 router.put('/savePost/:id', userMiddleware, savePost);
+router.put('/postReaction', userMiddleware, postReaction);
+router.get('/getAllPostsRecommended/:username', getAllPostsRecommended);
+router.get('/getAllPostsLiked/:username', getAllPostsLiked);
+router.get('/getPostLikes/:id', getPostLikes);
+router.get('/getPostRecommended/:id', getPostRecommended);
 
 // Export the router
 export default router;
