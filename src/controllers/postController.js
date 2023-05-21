@@ -190,6 +190,36 @@ async function searchPostByLocation(req, res) {
   }
 }
 
+async function getAllPostsSaved(req, res) {
+  try {
+    // Trouver l'utilisateur par son nom d'utilisateur
+    const user = await User.findOne({ username: req.params.username });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    //console.log('User:', user);
+
+    // Obtenir la liste des posts sauvegardés
+    const savedPostIds = user.savedPosts.map(
+      (savedPostObj) => savedPostObj.post
+    );
+    const savedPosts = await Post.find({ _id: { $in: savedPostIds } })
+      .populate('user', 'first_name last_name picture username cover')
+      .populate('comments.commentBy', 'first_name last_name picture username')
+      .sort({ createdAt: -1 });
+
+    console.log('Saved Posts:', savedPosts);
+
+    // Renvoyer la liste des posts sauvegardés
+    res.status(200).json(savedPosts);
+  } catch (error) {
+    //console.error('Error:', error);
+
+    res.status(500).json({ message: error.message });
+  }
+}
+
 // Export the functions
 export {
   getAllPosts,
@@ -199,4 +229,5 @@ export {
   deletePost,
   getPostsByLocation,
   getUniqueLocations,
+  getAllPostsSaved,
 };

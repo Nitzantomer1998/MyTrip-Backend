@@ -9,6 +9,7 @@ import {
   deletePost,
   getPostsByLocation,
   getUniqueLocations,
+  getAllPostsSaved,
 } from '../controllers/postController.js';
 
 // Define router
@@ -19,6 +20,7 @@ router.get('/getAllPosts', userMiddleware, getAllPosts);
 //add this one
 router.get('/posts/location/:location', userMiddleware, getPostsByLocation);
 router.get('/posts/locations', getUniqueLocations);
+router.get('/getAllPostsSaved/:username', getAllPostsSaved);
 
 // Define POST routes
 router.post('/createPost', userMiddleware, createPost);
