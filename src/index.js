@@ -3,10 +3,10 @@ import fs from 'fs';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
-import fileUpload from 'express-fileupload';
 
-// Import needed function
+// Import needed functions
 import connectDB from './config/database.js';
+import fileUpload from 'express-fileupload';
 
 // Set up dotenv configuartion
 dotenv.config();
