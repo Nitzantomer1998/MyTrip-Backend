@@ -34,7 +34,7 @@ async function getUserProfile(req, res) {
       },
     });
   } catch (error) {
-    console.error(`GetUserProfile Error: ${error}`);
+    console.error(`getUserProfile Error: ${error}`);
   }
 }
 
@@ -48,7 +48,7 @@ async function getUserSearchHistory(req, res) {
     // Send back the user search history
     res.json(currentUser.search);
   } catch (error) {
-    console.error(`GetUserSearchHistory Error: ${error}`);
+    console.error(`getUserSearchHistory Error: ${error}`);
   }
 }
 
@@ -62,7 +62,7 @@ async function getUserFollowersPage(req, res) {
     // Send back the current user followers
     res.json({ followers: currentUser.followers });
   } catch (error) {
-    console.error(`GetUserFollowersPageInfos Error: ${error}`);
+    console.error(`getUserFollowersPage Error: ${error}`);
   }
 }
 
@@ -76,7 +76,7 @@ async function getUserFollowingPage(req, res) {
     // Send back the current user following
     res.json({ following: currentUser.following });
   } catch (error) {
-    console.error(`GetUserFollowingPageInfos Error: ${error}`);
+    console.error(`getUserFollowingPage Error: ${error}`);
   }
 }
 
@@ -107,7 +107,7 @@ async function registerUser(req, res) {
       message: 'User registered successfully',
     });
   } catch (error) {
-    console.log(`RegisterUser Error: ${error}`);
+    console.error(`registerUser Error: ${error}`);
   }
 }
 
@@ -133,7 +133,7 @@ async function userLogin(req, res) {
       message: 'User logged in successfully',
     });
   } catch (error) {
-    console.error(`UserLogin Error: ${error}`);
+    console.error(`userLogin Error: ${error}`);
   }
 }
 
@@ -147,7 +147,7 @@ async function searchUser(req, res) {
     // Send back the searched user info
     res.json(searchedUser);
   } catch (error) {
-    console.error(`SearchUser Error: ${error}`);
+    console.error(`searchUser Error: ${error}`);
   }
 }
 
@@ -156,37 +156,38 @@ async function changeUserPassword(req, res) {
     // Find user by id and update his password
     await User.findByIdAndUpdate(
       { _id: req.user.id },
-      { password: await bcrypt.hash(req.body.password, 12) }
+      { $set: { password: await bcrypt.hash(req.body.password, 12) } }
     );
 
     // Send back success message
     return res.json({ message: 'Password changed successfully' });
   } catch (error) {
-    console.error(`ChangeUserPassword Error: ${error}`);
+    console.error(`changeUserPassword Error: ${error}`);
   }
 }
 
 async function shareUserPost(req, res) {
   try {
-    // Destructing needed fields
-    const { postId, userId } = req.params;
+    // Get the original post
+    const originalPost = await Post.findById({
+      _id: req.params.postId,
+    }).populate('user', 'username');
 
-    // Find the original post
-    const originalPost = await Post.findById(postId)
-      .populate('comments')
-      .populate({ path: 'user', select: 'username' });
-
-    // Find the user who shared the post
-    const sharingUser = await User.findById(userId, 'username');
+    // Get the sharing user
+    const sharingUser = await User.findById(
+      { _id: req.params.userId },
+      'username'
+    );
 
     // Create new post
-    const newPost = new Post({
-      post: postId,
-      user: userId,
-      sharedFrom: postId,
+    const newPost = await Post.create({
+      user: req.params.userId,
+      location: originalPost.location,
       text: originalPost.text,
       images: originalPost.images,
+      type: originalPost.type,
       background: originalPost.background,
+      sharedFrom: req.params.postId,
       originalUser: {
         username: originalPost.user.username,
       },
@@ -195,31 +196,30 @@ async function shareUserPost(req, res) {
       },
     });
 
-    // Save the new post
-    await newPost.save();
-
     // Send back the new post
     res.json(newPost);
   } catch (error) {
-    console.error(`ShareUserPost Error: ${error}`);
+    console.error(`shareUserPost Error: ${error}`);
   }
 }
 
 async function updateDetails(req, res) {
   try {
-    const { infos } = req.body;
+    // Update the current user details
     const updated = await User.findByIdAndUpdate(
-      req.user.id,
+      { _id: req.user.id },
       {
-        details: infos,
+        details: req.body.infos,
       },
       {
         new: true,
       }
     );
+
+    // Send back the updated details
     res.json(updated.details);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(`updateDetails Error: ${error}`);
   }
 }
 
@@ -238,7 +238,7 @@ async function followUser(req, res) {
     // Send back success message
     res.json({ message: 'User is following successfully' });
   } catch (error) {
-    console.error(`FollowUser Error: ${error}`);
+    console.error(`followUser Error: ${error}`);
   }
 }
 
@@ -257,7 +257,7 @@ async function unFollowUser(req, res) {
     // Send back success message
     res.json({ message: 'User is unfollowing successfully' });
   } catch (error) {
-    console.error(`UnFollowUser Error: ${error}`);
+    console.error(`unFollowUser Error: ${error}`);
   }
 }
 
@@ -272,19 +272,19 @@ async function updateUserProfilePicture(req, res) {
     // Send back success message
     res.json({ message: 'Profile picture updated successfully' });
   } catch (error) {
-    console.error(`UpdateUserProfilePicture Error: ${error}`);
+    console.error(`updateUserProfilePicture Error: ${error}`);
   }
 }
 
 async function addUserToSearchHistory(req, res) {
   try {
-    // Find the user and update the search history
+    // Update current user search history
     const updatedUser = await User.findOneAndUpdate(
       { _id: req.user.id, 'search.user': req.body.searchUser },
       { $set: { 'search.$.createdAt': new Date() } }
     );
 
-    // If the user doesn't exist in the search history, add a new search item
+    // The user is not in the search history, add him
     if (!updatedUser) {
       await User.findOneAndUpdate(
         { _id: req.user.id },
@@ -301,13 +301,13 @@ async function addUserToSearchHistory(req, res) {
       });
     }
   } catch (error) {
-    console.error(`AddUserToSearchHistory Error: ${error}`);
+    console.error(`addUserToSearchHistory Error: ${error}`);
   }
 }
 
 async function removeUserFromSearchHistory(req, res) {
   try {
-    // Find the user and remove him from the search history
+    // Remove the user from the search history
     await User.updateOne(
       { _id: req.user.id },
       { $pull: { search: { user: req.body.searchUser } } }
@@ -316,7 +316,7 @@ async function removeUserFromSearchHistory(req, res) {
     // Send back success message
     res.json({ message: 'User removed from search history successfully' });
   } catch (error) {
-    console.error(`RemoveUserFromSearchHistory Error: ${error}`);
+    console.error(`removeUserFromSearchHistory Error: ${error}`);
   }
 }
 
@@ -359,9 +359,10 @@ async function deleteUser(req, res) {
     // Delete the current user
     await User.findByIdAndDelete({ _id: req.user.id });
 
+    // Send back success message
     res.json({ message: 'User deleted successfully' });
   } catch (error) {
-    console.error(`DeleteUser Error: ${error}`);
+    console.error(`deleteUser Error: ${error}`);
   }
 }
 
