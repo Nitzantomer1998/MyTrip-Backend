@@ -13,7 +13,7 @@ async function connectDB() {
     await mongoose.connect(process.env.DATABASE_URL, options);
     console.log('Database Connected');
   } catch (error) {
-    console.log(`Database Failed: ${error.message}`);
+    console.error(`Database Failed: ${error.message}`);
   }
 }
 
