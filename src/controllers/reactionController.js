@@ -2,6 +2,58 @@
 import Reaction from '../models/reactionModel.js';
 import User from '../models/userModel.js';
 
+async function getUserTotalLikes(req, res) {
+  try {
+    // Get all posts of the user
+    const userPosts = await Post.find({ user: req.params.id });
+
+    let totalLikes = 0;
+
+    // For each post, get the number of likes
+    for (let i = 0; i < userPosts.length; i++) {
+      const postReacts = await React.find({
+        postRef: userPosts[i]._id,
+        react: 'like', // assuming 'like' is the name of the like reaction
+      });
+      totalLikes += postReacts.length;
+    }
+
+    console.log('Total Likes:', totalLikes); // ajouter cette ligne
+
+    res.json({ totalLikes });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+async function postReaction(req, res) {
+  try {
+    const { postId, react } = req.body;
+    const check = await React.findOne({
+      postRef: postId,
+      reactBy: mongoose.Types.ObjectId(req.user.id),
+    });
+    if (check == null) {
+      const newReact = new React({
+        react: react,
+        postRef: postId,
+        reactBy: req.user.id,
+      });
+      await newReact.save();
+    } else {
+      if (check.react == react) {
+        await React.findByIdAndRemove(check._id);
+      } else {
+        await React.findByIdAndUpdate(check._id, {
+          react: react,
+        });
+      }
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
 async function getPostReactions(req, res) {
   try {
     const reactsArray = await Reaction.find({ postRef: req.params.id });
@@ -65,4 +117,4 @@ async function getPostReactions(req, res) {
 }
 
 // Export the functions
-export { getPostReactions };
+export { getPostReactions, postReaction, getUserTotalLikes };

@@ -1,6 +1,7 @@
 // Import needed models
 import User from '../models/userModel.js';
 import Post from '../models/postModel.js';
+import Reaction from '../models/reactionModel.js';
 
 async function getAllPosts(req, res) {
   try {
@@ -220,47 +221,96 @@ async function getAllPostsSaved(req, res) {
 
 async function postReaction(req, res) {
   try {
-    if (req.body.react === 'like') {
-      // Find the post by postId and update it
-      await Post.findByIdAndUpdate(
-        { _id: req.body.postId },
-        {
-          $push: { likes: { like: req.user.id, likeAt: new Date() } },
-        }
-      );
+    const { postId, react } = req.body;
+    const check = await Reaction.findOne({
+      postRef: postId,
+      reactBy: req.user.id,
+    });
 
-      await User.findByIdAndUpdate(
-        { _id: req.user.id },
-        {
-          $push: { likedPosts: { post: req.body.postId, likedAt: new Date() } },
-        }
-      );
+    if (check && check.react === react) {
+      // L'utilisateur a déjà réagi de cette manière au post,
+      // donc nous supprimons la réaction.
+      await Reaction.findByIdAndDelete(check._id);
 
-      // Send back success message
-      return res.json({ message: 'User liked post successfully' });
+      // Supprimer également la réaction de la collection des posts
+      if (react === 'like') {
+        await Post.findByIdAndUpdate(
+          { _id: postId },
+          {
+            $pull: { likes: { like: req.user.id } },
+          }
+        );
+
+        await User.findByIdAndUpdate(
+          { _id: req.user.id },
+          {
+            $pull: { likedPosts: { post: postId } },
+          }
+        );
+      } else {
+        await Post.findByIdAndUpdate(
+          { _id: postId },
+          {
+            $pull: { recommends: { recommend: req.user.id } },
+          }
+        );
+
+        await User.findByIdAndUpdate(
+          { _id: req.user.id },
+          {
+            $pull: { recommendedPosts: { post: postId } },
+          }
+        );
+      }
+      
+      return res.json({ message: 'User unreacted post successfully' });
     } else {
-      // Find the post by postId and update it
-      await Post.findByIdAndUpdate(
-        { _id: req.body.postId },
-        {
-          $push: { recommends: { recommend: req.user.id, likeAt: new Date() } },
-        }
-      );
+      // Ajouter la réaction à la collection des réactions
+      const newReact = new Reaction({
+        react: react,
+        postRef: postId,
+        reactBy: req.user.id,
+      });
 
-      await User.findByIdAndUpdate(
-        { _id: req.user.id },
-        {
-          $push: {
-            recommendedPosts: {
-              post: req.body.postId,
-              recommendedAt: new Date(),
+      await newReact.save();
+
+      // Ajouter également la réaction à la collection des posts
+      if (react === 'like') {
+        await Post.findByIdAndUpdate(
+          { _id: postId },
+          {
+            $push: { likes: { like: req.user.id, likeAt: new Date() } },
+          }
+        );
+
+        await User.findByIdAndUpdate(
+          { _id: req.user.id },
+          {
+            $push: { likedPosts: { post: postId, likedAt: new Date() } },
+          }
+        );
+      } else {
+        await Post.findByIdAndUpdate(
+          { _id: postId },
+          {
+            $push: { recommends: { recommend: req.user.id, recommendAt: new Date() } },
+          }
+        );
+
+        await User.findByIdAndUpdate(
+          { _id: req.user.id },
+          {
+            $push: {
+              recommendedPosts: {
+                post: postId,
+                recommendedAt: new Date(),
+              },
             },
-          },
-        }
-      );
-
-      // Send back success message
-      return res.json({ message: 'User recommended post successfully' });
+          }
+        );
+      }
+      
+      return res.json({ message: 'User reacted post successfully' });
     }
   } catch (error) {
     console.error(`postReaction Error: ${error.message}`);
