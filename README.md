@@ -32,7 +32,7 @@ Project is created with:
 ## Installation
 * Open a folder for this project and clone this repository by writing the following command in command-line:
 ```
-git clone https://github.com/Nitzantomer1998/PM-Backend.git
+git clone https://github.com/Nitzantomer1998/MyTrip-Backend.git
 ```
 After clone the project run this command in the project folder from the command-line:
 ```
@@ -46,7 +46,7 @@ To run the application use this command in the project folder from the command-l
 npm start
 ```
 
-After that, go to on the repository : https://github.com/Nitzantomer1998/MyTrip-Frontend and follow the instruction
+After that, go to on the repository : https://github.com/Nitzantomer1998/MyTrip-Frontend.git and follow the instruction
 
 Your application should run on port 3000 with the development environment configuration, so in your browser just go to http://localhost:3000 (this should happen automatically after performing the last command)
 
