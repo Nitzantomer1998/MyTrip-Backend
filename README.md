@@ -52,21 +52,6 @@ Your application should run on port 3000 with the development environment config
 
 That's it! Your application should be running. 
 
-### Project Structure 
-
-The tree below displays the main files and folders structure.
-```textile                               
-├── .Circleci    // folder for the CI process 
-    ├── config.yml               
-├── src 
-    ├── index // For the server
-├── test 
-├── .eslintrc.json  //configuration file 
-├── .gitignore     //Contains the files we don't want to track in git
-├── .package-lock.json //For version management of our project
-├── .package.json //Includes all dependencies and devDependepncies
-├── README.md
-```
 
 ## Authors
 
