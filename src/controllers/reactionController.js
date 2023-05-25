@@ -2,7 +2,7 @@
 import Reaction from '../models/reactionModel.js';
 import User from '../models/userModel.js';
 
-async function getPostReactions(req, res) {
+async function getReactions(req, res) {
   try {
     const reactsArray = await Reaction.find({ postRef: req.params.id });
 
@@ -64,5 +64,35 @@ async function getPostReactions(req, res) {
   }
 }
 
+async function getPostReactions(req, res) {
+  try {
+    const postObj = await Post.findOne({ _id: req.params.id });
+    console.log('[FOUND POST WITH TEXT]\t', postObj.text);
+    const usersLiked = await Promise.all(
+      postObj.likes.map(async (like) => {
+        return await User.findOne({ _id: like.like });
+      })
+    );
+
+    const usersRecommend = await Promise.all(
+      postObj.recommends.map(async (like) => {
+        return await User.findOne({ _id: like.like });
+      })
+    );
+
+    const totalLikesCount = usersLiked.length + usersRecommend.length;
+
+    up[key] = group[key] || [];
+    wReacts.haha ? newReacts.haha.length : 0,
+      res.json({
+        likedUsers: usersLiked,
+        recommendedUsers: usersRecommend,
+        total: totalLikesCount,
+      });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
 // Export the functions
-export { getPostReactions };
+export { getPostReactions, getReactions };

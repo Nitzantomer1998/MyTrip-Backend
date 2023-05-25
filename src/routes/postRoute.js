@@ -16,7 +16,11 @@ import {
   getAllPostsRecommended,
   getAllPostsLiked,
   getPostLikes,
-  getPostRecommended,
+  getPostRecommends,
+  addLike,
+  removeLike,
+  addRecommend,
+  removeRecommend,
 } from '../controllers/postController.js';
 
 // Set up router
@@ -34,7 +38,7 @@ router.put('/commentPost', userMiddleware, commentPost); // Finished
 // Set up DELETE routes
 router.delete('/deletePost/:id', userMiddleware, deletePost); // Finished
 
-//add this one
+// add this one
 router.get('/posts/location/:location', userMiddleware, getPostsByLocation);
 router.get('/posts/locations', getUniqueLocations);
 router.get('/getAllPostsSaved/:username', getAllPostsSaved);
@@ -43,7 +47,12 @@ router.put('/postReaction', userMiddleware, postReaction);
 router.get('/getAllPostsRecommended/:username', getAllPostsRecommended);
 router.get('/getAllPostsLiked/:username', getAllPostsLiked);
 router.get('/getPostLikes/:id', getPostLikes);
-router.get('/getPostRecommended/:id', getPostRecommended);
+router.get('/getPostRecommends/:id', getPostRecommends);
+router.put('/addLike/:id', userMiddleware, addLike);
+router.put('/removeLike/:id', userMiddleware, removeLike);
+router.put('/addRecommend/:id', userMiddleware, addRecommend);
+router.put('/removeRecommend/:id', userMiddleware, removeRecommend);
+
 
 // Export the router
 export default router;
