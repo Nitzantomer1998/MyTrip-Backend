@@ -6,7 +6,8 @@ import userMiddleware from '../middlwares/userMiddleware.js';
 import {
   getUserProfile,
   getUserSearchHistory,
-  getUserFollowersPage,
+  getFollowersPageInfos,
+  getFollowersPageInfosId,
   getUserFollowingPage,
   getUserStatistics,
   registerUser,
@@ -17,6 +18,7 @@ import {
   updateDetails,
   followUser,
   unFollowUser,
+  unfollowReverse,
   addUserToSearchHistory,
   removeUserFromSearchHistory,
   updateUserProfilePicture,
@@ -29,7 +31,9 @@ const router = express.Router();
 // Set up GET routes
 router.get('/getUserProfile/:username', userMiddleware, getUserProfile); // Get rid of "freindship", the return profile page contain all the user information = BAD!!!!
 router.get('/getUserSearchHistory', userMiddleware, getUserSearchHistory); // Finished
-router.get('/getUserFollowersPage/:id', userMiddleware, getUserFollowersPage); // Finished
+router.get('/getFollowersPageInfos', userMiddleware, getFollowersPageInfos); // Finished
+router.get('/getFollowersPageInfosId/:id', userMiddleware, getFollowersPageInfosId); // Finished
+
 router.get('/getUserFollowingPage/:id', userMiddleware, getUserFollowingPage); // Finished
 router.get('/getUserStatistics/:id', userMiddleware, getUserStatistics); // Will change alot in the future
 
@@ -44,6 +48,8 @@ router.post('/shareUserPost/:postId/:userId', userMiddleware, shareUserPost); //
 router.put('/updateDetails', userMiddleware, updateDetails); // Update in the future -> details field is useless
 router.put('/followUser/:id', userMiddleware, followUser); // Finished
 router.put('/unFollowUser/:id', userMiddleware, unFollowUser); // Finished
+router.put('/unfollowReverse/:id', userMiddleware, unfollowReverse); // Finished
+
 router.put(
   '/updateUserProfilePicture',
   userMiddleware,

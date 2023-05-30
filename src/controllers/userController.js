@@ -52,19 +52,44 @@ async function getUserSearchHistory(req, res) {
   }
 }
 
-async function getUserFollowersPage(req, res) {
+async function getFollowersPageInfos(req, res) {
   try {
-    // Get the current user followers
-    const currentUser = await User.findById({ _id: req.params.id })
+    let user = await User.findById(req.user.id)
       .select('followers')
-      .populate('followers', 'username picture');
+      .populate('followers', 'first_name last_name picture username');
 
-    // Send back the current user followers
-    res.json({ followers: currentUser.followers });
+    const following = (await User.findById(req.user.id)).following
+
+    const result = user.followers.map((follower) => {
+      
+      return {
+        _id: follower._id,
+        first_name: follower.first_name,
+        last_name: follower.last_name,
+        picture: follower.picture,
+        username: follower.username,
+        following:  following.includes(follower._id )
+      }
+      
+    })
+
+    res.json({ followers: result });
   } catch (error) {
-    console.error(`getUserFollowersPage Error: ${error}`);
+    console.log("ERROR FETCHING FOLLOWERS]\t", error)
+    res.status(500).json({ message: error.message });
   }
-}
+};
+
+async function getFollowersPageInfosId(req, res) {
+  try {
+    const user = await User.findById(req.params.id)
+      .select('followers')
+      .populate('followers', 'first_name last_name picture username');
+    res.json({ followers: user.followers });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 async function getUserFollowingPage(req, res) {
   try {
@@ -330,6 +355,34 @@ async function unFollowUser(req, res) {
   }
 }
 
+async function unfollowReverse(req, res) {
+  try {
+    if (req.user.id !== req.params.id) {
+      const receiver = await User.findById(req.user.id);
+      const sender = await User.findById(req.params.id);
+      if (
+        receiver.followers.includes(sender._id) &&
+        sender.following.includes(receiver._id)
+      ) {
+        await receiver.updateOne({
+          $pull: { followers: sender._id },
+        });
+
+        await sender.updateOne({
+          $pull: { following: receiver._id },
+        });
+        res.json({ message: 'unfollow success' });
+      } else {
+        return res.status(400).json({ message: 'Already not following' });
+      }
+    } else {
+      return res.status(400).json({ message: "You can't unfollow yourself" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 async function updateUserProfilePicture(req, res) {
   try {
     // Update the current user profile picture
@@ -432,7 +485,8 @@ async function deleteUser(req, res) {
 export {
   getUserProfile,
   getUserSearchHistory,
-  getUserFollowersPage,
+  getFollowersPageInfos,
+  getFollowersPageInfosId,
   getUserFollowingPage,
   getUserStatistics,
   registerUser,
@@ -443,6 +497,7 @@ export {
   deleteUser,
   followUser,
   unFollowUser,
+  unfollowReverse,
   updateUserProfilePicture,
   addUserToSearchHistory,
   removeUserFromSearchHistory,
