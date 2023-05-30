@@ -80,6 +80,75 @@ async function getUserFollowingPage(req, res) {
   }
 }
 
+async function getUserStatistics(req, res) {
+  try {
+    // get the current user posts
+    const posts = await Post.find({ user: req.user.id });
+    const postsCounter = posts.length;
+
+    // Traverse on the posts and get the total amount of likes
+    let receivedLikes = 0;
+    posts.forEach((post) => {
+      receivedLikes += post.likes.length;
+    });
+
+    // Traverse on the posts and get the total amount of recommended
+    let receivedRecommends = 0;
+    posts.forEach((post) => {
+      receivedRecommends += post.recommends.length;
+    });
+
+    // Traverse on the posts and get the total amount of comments
+    let receivedComments = 0;
+    posts.forEach((post) => {
+      receivedComments += post.comments.length;
+    });
+
+    // Traverse on posts and get total amount of shares i did
+    let iShared = 0;
+    posts.forEach((post) => {
+      if (post.sharedFrom) iShared++;
+    });
+
+    // Traverse on all post and get the total amount of likes i did
+    const postsILiked = await Post.find({ 'likes.like': req.user.id });
+    const iLiked = postsILiked.length;
+
+    // Traverse on all post and get the total amount of recommends i did
+    const postsIRecommended = await Post.find({
+      'recommends.recommend': req.user.id,
+    });
+    const iRecommended = postsIRecommended.length;
+
+    // Traverse on all post and get the total amount of comments i did
+    const postsICommented = await Post.find({
+      'comments.commentBy': req.user.id,
+    });
+    const iCommented = postsICommented.length;
+
+    // Traverse on all post and get the total amount of shares i did
+    const postIds = posts.map((post) => post._id);
+    const postsReceivedShare = await Post.find({
+      sharedFrom: { $in: postIds },
+    });
+    const receivedShares = postsReceivedShare.length;
+
+    return res.json({
+      postsCounter,
+      receivedLikes,
+      receivedRecommends,
+      receivedComments,
+      receivedShares,
+      iLiked,
+      iRecommended,
+      iCommented,
+      iShared,
+    });
+  } catch (error) {
+    console.error(`getUserStatistics Error: ${error}`);
+  }
+}
+
 async function registerUser(req, res) {
   try {
     // Username is already taken, return accordingly
@@ -332,18 +401,11 @@ async function deleteUser(req, res) {
     await Reaction.deleteMany({ reactBy: req.user.id });
 
     // Delete the current user following, followers and searched lists
+    await User.findById({ _id: req.user.id });
+    // Delete user from friends' following and followers lists
     await User.updateMany(
-      {
-        $or: [{ following: req.user.id }, { followers: req.user.id }],
-        $or: [{ 'search.user': req.user.id }],
-      },
-      {
-        $pull: {
-          following: req.user.id,
-          followers: req.user.id,
-          search: { user: req.user.id },
-        },
-      }
+      { $or: [{ following: req.user.id }, { followers: req.user.id }] },
+      { $pull: { following: req.user.id, followers: req.user.id } }
     );
 
     // Get the current user
@@ -372,6 +434,7 @@ export {
   getUserSearchHistory,
   getUserFollowersPage,
   getUserFollowingPage,
+  getUserStatistics,
   registerUser,
   userLogin,
   searchUser,

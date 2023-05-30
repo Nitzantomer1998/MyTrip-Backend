@@ -8,6 +8,7 @@ import {
   getUserSearchHistory,
   getUserFollowersPage,
   getUserFollowingPage,
+  getUserStatistics,
   registerUser,
   userLogin,
   searchUser,
@@ -30,6 +31,7 @@ router.get('/getUserProfile/:username', userMiddleware, getUserProfile); // Get 
 router.get('/getUserSearchHistory', userMiddleware, getUserSearchHistory); // Finished
 router.get('/getUserFollowersPage/:id', userMiddleware, getUserFollowersPage); // Finished
 router.get('/getUserFollowingPage/:id', userMiddleware, getUserFollowingPage); // Finished
+router.get('/getUserStatistics/:id', userMiddleware, getUserStatistics); // Will change alot in the future
 
 // Set up POST routes
 router.post('/registerUser', registerUser); // cancel sending back error messages
