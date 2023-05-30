@@ -401,18 +401,11 @@ async function deleteUser(req, res) {
     await Reaction.deleteMany({ reactBy: req.user.id });
 
     // Delete the current user following, followers and searched lists
+    await User.findById({ _id: req.user.id });
+    // Delete user from friends' following and followers lists
     await User.updateMany(
-      {
-        $or: [{ following: req.user.id }, { followers: req.user.id }],
-        $or: [{ 'search.user': req.user.id }],
-      },
-      {
-        $pull: {
-          following: req.user.id,
-          followers: req.user.id,
-          search: { user: req.user.id },
-        },
-      }
+      { $or: [{ following: req.user.id }, { followers: req.user.id }] },
+      { $pull: { following: req.user.id, followers: req.user.id } }
     );
 
     // Get the current user
