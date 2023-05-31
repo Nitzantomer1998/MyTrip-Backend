@@ -17,6 +17,7 @@ import {
   getAllPostsLiked,
   getPostLikes,
   getPostRecommended,
+  getPostbyId,
 } from '../controllers/postController.js';
 
 // Set up router
@@ -44,6 +45,8 @@ router.get('/getAllPostsRecommended/:username', getAllPostsRecommended);
 router.get('/getAllPostsLiked/:username', getAllPostsLiked);
 router.get('/getPostLikes/:id', getPostLikes);
 router.get('/getPostRecommended/:id', getPostRecommended);
+router.get('/getPostbyId/:id', getPostbyId);
+
 
 // Export the router
 export default router;

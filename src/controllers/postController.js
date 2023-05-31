@@ -407,6 +407,21 @@ async function getPostRecommended(req, res) {
   }
 }
 
+async function getPostbyId(req, res) {
+  const postId = req.params.id;
+  try {
+    const post = await Post.findById(postId);
+    console.log('post:', postId); //undefined
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+    res.json(post);
+
+  } catch (error) {
+    console.error(`getPostbyId Error: ${error}`);
+  }
+}
+
 // Export the functions
 export {
   getAllPosts,
@@ -422,4 +437,5 @@ export {
   getAllPostsLiked,
   getPostLikes,
   getPostRecommended,
+  getPostbyId,
 };
