@@ -29,6 +29,7 @@ async function listImages(req, res) {
 
 async function uploadImages(req, res) {
   try {
+    console.log("file" + req);
     // Get all files from request
     const files = Object.values(req.files).flat();
 

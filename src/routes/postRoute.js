@@ -18,6 +18,7 @@ import {
   getPostLikes,
   getPostRecommended,
   getPostbyId,
+  updatePost,
 } from '../controllers/postController.js';
 
 // Set up router
@@ -28,6 +29,7 @@ router.get('/getAllPosts', userMiddleware, getAllPosts); // Finished
 
 // Set up POST routes
 router.post('/createPost', userMiddleware, createPost); // Finished
+router.post('/updatePost/:id', userMiddleware, updatePost); // Finished
 
 // Set up PUT routes
 router.put('/commentPost', userMiddleware, commentPost); // Finished

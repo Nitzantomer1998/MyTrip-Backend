@@ -411,7 +411,6 @@ async function getPostbyId(req, res) {
   const postId = req.params.id;
   try {
     const post = await Post.findById(postId);
-    console.log('post:', postId); //undefined
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });
     }
@@ -421,6 +420,35 @@ async function getPostbyId(req, res) {
     console.error(`getPostbyId Error: ${error}`);
   }
 }
+
+async function updatePost(req, res) {
+  const postId = req.params.id;
+  const { content, selectedImages } = req.body;
+  console.log('content from backend:', content);
+  console.log('selectedImages from backend:', JSON.stringify(selectedImages));
+
+  try {
+    // Recherchez le post à mettre à jour
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    // update the post
+    post.text = content;
+    post.images.splice(0, post.images.length, ...selectedImages);
+
+    //save the post
+    await post.save();
+
+    res.json({ message: 'Post updated successfully', post });
+  } catch (error) {
+    console.error(`updatePost Error: ${error}`);
+    res.status(500).json({ message: 'Error updating post' });
+  }
+}
+
 
 // Export the functions
 export {
@@ -438,4 +466,5 @@ export {
   getPostLikes,
   getPostRecommended,
   getPostbyId,
+  updatePost,
 };
