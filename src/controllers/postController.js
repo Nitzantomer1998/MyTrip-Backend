@@ -423,7 +423,7 @@ async function getPostbyId(req, res) {
 
 async function updatePost(req, res) {
   const postId = req.params.id;
-  const { content, selectedImages } = req.body;
+  const { content, selectedImages, location } = req.body;
   console.log('content from backend:', content);
   console.log('selectedImages from backend:', JSON.stringify(selectedImages));
 
@@ -442,6 +442,9 @@ async function updatePost(req, res) {
     } else {
       post.images = selectedImages;
     }
+
+    post.location = location;
+
     
 
     //save the post
