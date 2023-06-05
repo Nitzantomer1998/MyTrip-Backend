@@ -437,7 +437,12 @@ async function updatePost(req, res) {
 
     // update the post
     post.text = content;
-    post.images.splice(0, post.images.length, ...selectedImages);
+    if (post.images && Array.isArray(post.images)) {
+      post.images.splice(0, post.images.length, ...selectedImages);
+    } else {
+      post.images = selectedImages;
+    }
+    
 
     //save the post
     await post.save();
