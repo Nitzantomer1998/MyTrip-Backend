@@ -1,7 +1,6 @@
 // Import needed package
 import express from 'express';
 
-// Import needed functions
 import userMiddleware from '../middlwares/userMiddleware.js';
 import {
   getAllPosts,
