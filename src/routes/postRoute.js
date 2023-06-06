@@ -15,6 +15,9 @@ import {
   getAllPostsRecommended,
   getAllPostsLiked,
   getPostLikes,
+  getPostRecommended,
+  getPostbyId,
+  updatePost,
   getPostRecommends,
   addLike,
   removeLike,
@@ -30,6 +33,7 @@ router.get('/getAllPosts', userMiddleware, getAllPosts); // Finished
 
 // Set up POST routes
 router.post('/createPost', userMiddleware, createPost); // Finished
+router.post('/updatePost/:id', userMiddleware, updatePost); // Finished
 
 // Set up PUT routes
 router.put('/commentPost', userMiddleware, commentPost); // Finished
@@ -46,6 +50,8 @@ router.put('/postReaction', userMiddleware, postReaction);
 router.get('/getAllPostsRecommended/:username', getAllPostsRecommended);
 router.get('/getAllPostsLiked/:username', getAllPostsLiked);
 router.get('/getPostLikes/:id', getPostLikes);
+router.get('/getPostRecommended/:id', getPostRecommended);
+router.get('/getPostbyId/:id', getPostbyId);
 router.get('/getPostRecommends/:id', getPostRecommends);
 router.put('/addLike/:id', userMiddleware, addLike);
 router.put('/removeLike/:id', userMiddleware, removeLike);
