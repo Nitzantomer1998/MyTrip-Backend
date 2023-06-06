@@ -52,19 +52,44 @@ async function getUserSearchHistory(req, res) {
   }
 }
 
-async function getUserFollowersPage(req, res) {
+async function getFollowersPageInfos(req, res) {
   try {
-    // Get the current user followers
-    const currentUser = await User.findById({ _id: req.params.id })
+    let user = await User.findById(req.user.id)
       .select('followers')
-      .populate('followers', 'username picture');
+      .populate('followers', 'first_name last_name picture username');
 
-    // Send back the current user followers
-    res.json({ followers: currentUser.followers });
+    const following = (await User.findById(req.user.id)).following
+
+    const result = user.followers.map((follower) => {
+      
+      return {
+        _id: follower._id,
+        first_name: follower.first_name,
+        last_name: follower.last_name,
+        picture: follower.picture,
+        username: follower.username,
+        following:  following.includes(follower._id )
+      }
+      
+    })
+
+    res.json({ followers: result });
   } catch (error) {
-    console.error(`getUserFollowersPage Error: ${error}`);
+    console.log("ERROR FETCHING FOLLOWERS]\t", error)
+    res.status(500).json({ message: error.message });
   }
-}
+};
+
+async function getFollowersPageInfosId(req, res) {
+  try {
+    const user = await User.findById(req.params.id)
+      .select('followers')
+      .populate('followers', 'first_name last_name picture username');
+    res.json({ followers: user.followers });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 async function getUserFollowingPage(req, res) {
   try {
@@ -77,6 +102,75 @@ async function getUserFollowingPage(req, res) {
     res.json({ following: currentUser.following });
   } catch (error) {
     console.error(`getUserFollowingPage Error: ${error}`);
+  }
+}
+
+async function getUserStatistics(req, res) {
+  try {
+    // get the current user posts
+    const posts = await Post.find({ user: req.user.id });
+    const postsCounter = posts.length;
+
+    // Traverse on the posts and get the total amount of likes
+    let receivedLikes = 0;
+    posts.forEach((post) => {
+      receivedLikes += post.likes.length;
+    });
+
+    // Traverse on the posts and get the total amount of recommended
+    let receivedRecommends = 0;
+    posts.forEach((post) => {
+      receivedRecommends += post.recommends.length;
+    });
+
+    // Traverse on the posts and get the total amount of comments
+    let receivedComments = 0;
+    posts.forEach((post) => {
+      receivedComments += post.comments.length;
+    });
+
+    // Traverse on posts and get total amount of shares i did
+    let iShared = 0;
+    posts.forEach((post) => {
+      if (post.sharedFrom) iShared++;
+    });
+
+    // Traverse on all post and get the total amount of likes i did
+    const postsILiked = await Post.find({ 'likes.like': req.user.id });
+    const iLiked = postsILiked.length;
+
+    // Traverse on all post and get the total amount of recommends i did
+    const postsIRecommended = await Post.find({
+      'recommends.recommend': req.user.id,
+    });
+    const iRecommended = postsIRecommended.length;
+
+    // Traverse on all post and get the total amount of comments i did
+    const postsICommented = await Post.find({
+      'comments.commentBy': req.user.id,
+    });
+    const iCommented = postsICommented.length;
+
+    // Traverse on all post and get the total amount of shares i did
+    const postIds = posts.map((post) => post._id);
+    const postsReceivedShare = await Post.find({
+      sharedFrom: { $in: postIds },
+    });
+    const receivedShares = postsReceivedShare.length;
+
+    return res.json({
+      postsCounter,
+      receivedLikes,
+      receivedRecommends,
+      receivedComments,
+      receivedShares,
+      iLiked,
+      iRecommended,
+      iCommented,
+      iShared,
+    });
+  } catch (error) {
+    console.error(`getUserStatistics Error: ${error}`);
   }
 }
 
@@ -261,6 +355,34 @@ async function unFollowUser(req, res) {
   }
 }
 
+async function unfollowReverse(req, res) {
+  try {
+    if (req.user.id !== req.params.id) {
+      const receiver = await User.findById(req.user.id);
+      const sender = await User.findById(req.params.id);
+      if (
+        receiver.followers.includes(sender._id) &&
+        sender.following.includes(receiver._id)
+      ) {
+        await receiver.updateOne({
+          $pull: { followers: sender._id },
+        });
+
+        await sender.updateOne({
+          $pull: { following: receiver._id },
+        });
+        res.json({ message: 'unfollow success' });
+      } else {
+        return res.status(400).json({ message: 'Already not following' });
+      }
+    } else {
+      return res.status(400).json({ message: "You can't unfollow yourself" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 async function updateUserProfilePicture(req, res) {
   try {
     // Update the current user profile picture
@@ -332,18 +454,11 @@ async function deleteUser(req, res) {
     await Reaction.deleteMany({ reactBy: req.user.id });
 
     // Delete the current user following, followers and searched lists
+    await User.findById({ _id: req.user.id });
+    // Delete user from friends' following and followers lists
     await User.updateMany(
-      {
-        $or: [{ following: req.user.id }, { followers: req.user.id }],
-        $or: [{ 'search.user': req.user.id }],
-      },
-      {
-        $pull: {
-          following: req.user.id,
-          followers: req.user.id,
-          search: { user: req.user.id },
-        },
-      }
+      { $or: [{ following: req.user.id }, { followers: req.user.id }] },
+      { $pull: { following: req.user.id, followers: req.user.id } }
     );
 
     // Get the current user
@@ -370,8 +485,10 @@ async function deleteUser(req, res) {
 export {
   getUserProfile,
   getUserSearchHistory,
-  getUserFollowersPage,
+  getFollowersPageInfos,
+  getFollowersPageInfosId,
   getUserFollowingPage,
+  getUserStatistics,
   registerUser,
   userLogin,
   searchUser,
@@ -380,6 +497,7 @@ export {
   deleteUser,
   followUser,
   unFollowUser,
+  unfollowReverse,
   updateUserProfilePicture,
   addUserToSearchHistory,
   removeUserFromSearchHistory,

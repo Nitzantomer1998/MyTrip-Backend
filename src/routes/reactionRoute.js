@@ -2,8 +2,8 @@
 import userMiddleware from '../middlwares/userMiddleware.js';
 import { Router } from 'express';
 import {
-  postReaction,
-  getUserTotalLikes,
+  //postReaction,
+  //getUserTotalLikes,
   getPostReactions,
 } from '../controllers/reactionController.js';
 
@@ -13,8 +13,8 @@ const router = Router();
 // Define GET routes
 router.get('/getPostReactions/:id', userMiddleware, getPostReactions);
 
-router.put('/reactPost', userMiddleware, postReaction);
-router.get('/getUserTotalLikes/:id', userMiddleware, getUserTotalLikes);
+//router.put('/reactPost', userMiddleware, postReaction);
+//router.get('/getUserTotalLikes/:id', userMiddleware, getUserTotalLikes);
 
 // Export the router
 export default router;
