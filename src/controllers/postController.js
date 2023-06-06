@@ -446,7 +446,6 @@ async function getPostbyId(req, res) {
       return res.status(404).json({ message: 'Post not found' });
     }
     res.json(post);
-
   } catch (error) {
     console.error(`getPostbyId Error: ${error}`);
   }
@@ -476,8 +475,6 @@ async function updatePost(req, res) {
 
     post.location = location;
 
-    
-
     //save the post
     await post.save();
 
@@ -488,6 +485,19 @@ async function updatePost(req, res) {
   }
 }
 
+async function getPostRecommended(req, res) {
+  try {
+    // Find the post by postId and populate the 'likes' field with user documents
+    const post = await Post.findById(req.body.postId)
+      .select('recommends.recommend')
+      .populate('recommends.recommend', 'username picture');
+
+    // Send back the current user followers
+    res.json({ recommends: currentPost.recommends });
+  } catch (error) {
+    console.error(`getPostRecommended Error: ${error}`);
+  }
+}
 
 // Export the functions
 export {
