@@ -1,4 +1,3 @@
-// Import needed packages
 import fs from 'fs';
 import cors from 'cors';
 import dotenv from 'dotenv';
