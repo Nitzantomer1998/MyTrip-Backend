@@ -10,14 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm install
 
-      - name: Run linter
+      - name: Run Linter
         run: npm run linter
 
-      - name: Deploy service
+      - name: Build Artifacts
+        run: npm run build
+
+      - name: Deploy Service
         run: curl "https://api.render.com/deploy/srv-ch009ljlbnoms4ugsn5g?key=ijaYK6QOLx8"
