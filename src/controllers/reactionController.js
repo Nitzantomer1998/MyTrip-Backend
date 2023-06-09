@@ -67,7 +67,7 @@ async function getReactions(req, res) {
 async function getPostReactions(req, res) {
   try {
     const postObj = await Post.findOne({ _id: req.params.id });
-    console.log('[FOUND POST WITH TEXT]\t', postObj.text);
+    //console.log('[FOUND POST WITH TEXT]\t', postObj.text);
     const usersLiked = await Promise.all(
       postObj.likes.map(async (like) => {
         return await User.findOne({ _id: like.like });

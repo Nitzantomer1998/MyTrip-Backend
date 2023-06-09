@@ -58,27 +58,25 @@ async function getFollowersPageInfos(req, res) {
       .select('followers')
       .populate('followers', 'first_name last_name picture username');
 
-    const following = (await User.findById(req.user.id)).following
+    const following = (await User.findById(req.user.id)).following;
 
     const result = user.followers.map((follower) => {
-      
       return {
         _id: follower._id,
         first_name: follower.first_name,
         last_name: follower.last_name,
         picture: follower.picture,
         username: follower.username,
-        following:  following.includes(follower._id )
-      }
-      
-    })
+        following: following.includes(follower._id),
+      };
+    });
 
     res.json({ followers: result });
   } catch (error) {
-    console.log("ERROR FETCHING FOLLOWERS]\t", error)
+    //console.log('ERROR FETCHING FOLLOWERS]\t', error);
     res.status(500).json({ message: error.message });
   }
-};
+}
 
 async function getFollowersPageInfosId(req, res) {
   try {
@@ -89,7 +87,7 @@ async function getFollowersPageInfosId(req, res) {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-};
+}
 
 async function getUserFollowingPage(req, res) {
   try {
@@ -381,7 +379,7 @@ async function unfollowReverse(req, res) {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-};
+}
 
 async function updateUserProfilePicture(req, res) {
   try {
@@ -481,6 +479,30 @@ async function deleteUser(req, res) {
   }
 }
 
+async function getUserFollowersCount(req, res) {
+  try {
+    console.log(req.params.id);
+    // Find the user with the provided ID
+    const user = await User.findById(req.params.id);
+    // Check if user exists
+    if (!user) {
+      res.status(404);
+      throw new Error('User not found');
+    }
+    // Send back the user's follower count
+    res.json(user.followers.length);
+    console.log(req.params.id);
+
+    console.log(
+      user.followers.length,
+      'hjkfhkjdsfhjkdsjhkfsdhkjfhkjskjfhsdfhjkdshkjfdshjkfhjksfhjffhjksdfkjhdshkjfdshkhkjfdfshkjsdkjh'
+    );
+  } catch (error) {
+    console.log(`getUserFollowersCount Error: ${error}`);
+    res.status(500).json({ error: error.message });
+  }
+}
+
 // Export the functions
 export {
   getUserProfile,
@@ -502,4 +524,5 @@ export {
   addUserToSearchHistory,
   removeUserFromSearchHistory,
   updateDetails,
+  getUserFollowersCount,
 };
