@@ -1,21 +1,17 @@
-// Import needed package
 import mongoose from 'mongoose';
 
 async function connectDB() {
   try {
-    // Database connection options
-    const options = {
+    const connectOptions = {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     };
 
-    // Connect to the database
-    await mongoose.connect(process.env.DATABASE_URL, options);
+    await mongoose.connect(process.env.DATABASE_URL, connectOptions);
     console.log('Database Connected');
   } catch (error) {
     console.error(`Database Failed: ${error.message}`);
   }
 }
 
-// Export the function
 export default connectDB;
