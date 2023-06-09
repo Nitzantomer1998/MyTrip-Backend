@@ -23,6 +23,7 @@ import {
   removeUserFromSearchHistory,
   updateUserProfilePicture,
   deleteUser,
+  getUserFollowersCount,
 } from '../controllers/userController.js';
 
 // Set up router
@@ -36,6 +37,8 @@ router.get('/getFollowersPageInfosId/:id', userMiddleware, getFollowersPageInfos
 
 router.get('/getUserFollowingPage/:id', userMiddleware, getUserFollowingPage); // Finished
 router.get('/getUserStatistics/:id', userMiddleware, getUserStatistics); // Will change alot in the future
+router.get('/getUserFollowersCount/:id', userMiddleware, getUserFollowersCount);// Finished
+
 
 // Set up POST routes
 router.post('/registerUser', registerUser); // cancel sending back error messages

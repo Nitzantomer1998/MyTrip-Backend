@@ -140,7 +140,6 @@ async function getPostsByLocation(req, res) {
   const location = req.params.location;
 
   try {
-    console.log(location + 'backend getpostsbylocation');
     const posts = await Post.find({ location: location })
       .populate('user')
       .populate('comments.commentBy');
@@ -203,8 +202,6 @@ async function getAllPostsSaved(req, res) {
       .populate('user', 'username picture')
       .populate('comments.commentBy', 'username picture')
       .sort({ createdAt: -1 });
-
-    console.log('Saved Posts:', savedPosts);
 
     res.status(200).json(savedPosts);
   } catch (error) {
@@ -277,7 +274,6 @@ async function getAllPostsLiked(req, res) {
       .populate('comments.commentBy', 'username picture')
       .sort({ createdAt: -1 });
 
-    console.log('liked Posts:', likedPosts);
 
     res.status(200).json(likedPosts);
   } catch (error) {
@@ -303,7 +299,6 @@ async function getAllPostsRecommended(req, res) {
       .populate('comments.commentBy', 'username picture')
       .sort({ createdAt: -1 });
 
-    console.log('recommended Posts:', recommendedPosts);
 
     // Renvoyer la liste des posts sauvegardés
     res.status(200).json(recommendedPosts);
@@ -454,8 +449,6 @@ async function getPostbyId(req, res) {
 async function updatePost(req, res) {
   const postId = req.params.id;
   const { content, selectedImages, location } = req.body;
-  console.log('content from backend:', content);
-  console.log('selectedImages from backend:', JSON.stringify(selectedImages));
 
   try {
     // Recherchez le post à mettre à jour
