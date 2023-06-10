@@ -260,17 +260,28 @@ async function changeUserPassword(req, res) {
 
 async function changeUsername(req, res) {
   try {
-    // Find user by id and update his username
-    console.log("im here");
-
     //console.log(req.params.username);
-    await User.findByIdAndUpdate(
-      { _id: req.user.id },
-      { $set: { username: req.params.username } }
-    );
+    const userExist = await User.findOne({ username: req.params.username });
+    if (userExist) {
+      return res.status(400).json({ message: 'Username already taken' });
+    } else {
+      await Post.updateMany(
+        { 'originalUser.username': req.user.username },
+        { $set: { 'originalUser.username': req.params.username } }
+      );
 
-    // Send back success message
-    return res.json({ message: 'username changed successfully' });
+      await Post.updateMany(
+        { 'sharingUser.username': req.user.username },
+        { $set: { 'sharingUser.username': req.params.username } }
+      );
+
+      await User.findByIdAndUpdate(
+        { _id: req.user.id },
+        { $set: { username: req.params.username } }
+      );
+      // Send back success message
+      return res.json({ message: 'username changed successfully' });
+    }
   } catch (error) {
     console.error(`change username Error: ${error}`);
   }
