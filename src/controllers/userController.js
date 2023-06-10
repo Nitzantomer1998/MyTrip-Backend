@@ -448,6 +448,16 @@ async function deleteUser(req, res) {
       { $pull: { comments: { commentBy: req.user.id } } }
     );
 
+    await Post.updateMany(
+      { 'likes.like': req.user.id },
+      { $pull: { likes: { like: req.user.id } } }
+    );
+
+    await Post.updateMany(
+      { 'recommends.recommend': req.user.id },
+      { $pull: { recommends: { recommend: req.user.id } } }
+    );
+
     // Delete the current user reactions
     await Reaction.deleteMany({ reactBy: req.user.id });
 
@@ -459,6 +469,10 @@ async function deleteUser(req, res) {
       { $pull: { following: req.user.id, followers: req.user.id } }
     );
 
+    await User.updateMany(
+      { 'search.user': req.user.id },
+      { $pull: { search: { user: req.user.id } }, multi: true }
+    );
     // Get the current user
     const deletedUser = await User.findById({ _id: req.user.id });
 
