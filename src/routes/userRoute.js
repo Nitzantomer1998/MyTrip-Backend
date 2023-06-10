@@ -14,6 +14,7 @@ import {
   userLogin,
   searchUser,
   changeUserPassword,
+  changeUsername,
   shareUserPost,
   updateDetails,
   followUser,
@@ -45,6 +46,7 @@ router.post('/registerUser', registerUser); // cancel sending back error message
 router.post('/userLogin', userLogin); // cancel sending back error messages
 router.post('/searchUser/:username', userMiddleware, searchUser); // Finished
 router.post('/changeUserPassword', userMiddleware, changeUserPassword); // Finished
+router.post('/changeUsername/:username', userMiddleware, changeUsername); // Finished
 router.post('/shareUserPost/:postId/:userId', userMiddleware, shareUserPost); // Finished
 
 // Set up PUT routes

@@ -258,6 +258,24 @@ async function changeUserPassword(req, res) {
   }
 }
 
+async function changeUsername(req, res) {
+  try {
+    // Find user by id and update his username
+    console.log("im here");
+
+    //console.log(req.params.username);
+    await User.findByIdAndUpdate(
+      { _id: req.user.id },
+      { $set: { username: req.params.username } }
+    );
+
+    // Send back success message
+    return res.json({ message: 'username changed successfully' });
+  } catch (error) {
+    console.error(`change username Error: ${error}`);
+  }
+}
+
 async function shareUserPost(req, res) {
   try {
     // Get the original post
@@ -515,6 +533,7 @@ export {
   userLogin,
   searchUser,
   changeUserPassword,
+  changeUsername,
   shareUserPost,
   deleteUser,
   followUser,
