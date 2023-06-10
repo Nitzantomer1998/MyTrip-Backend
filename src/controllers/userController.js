@@ -260,7 +260,7 @@ async function changeUserPassword(req, res) {
 
 async function changeUsername(req, res) {
   try {
-    console.log("im here");
+    console.log('im here');
 
     // Check if the new username is already taken
     const existingUser = await User.findOne({ username: req.params.username });
@@ -281,7 +281,6 @@ async function changeUsername(req, res) {
     res.status(500).json({ message: 'Server error' });
   }
 }
-
 
 async function shareUserPost(req, res) {
   try {
