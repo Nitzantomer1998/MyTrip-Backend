@@ -73,7 +73,6 @@ async function getFollowersPageInfos(req, res) {
 
     res.json({ followers: result });
   } catch (error) {
-    //console.log('ERROR FETCHING FOLLOWERS]\t', error);
     res.status(500).json({ message: error.message });
   }
 }
@@ -260,8 +259,6 @@ async function changeUserPassword(req, res) {
 
 async function changeUsername(req, res) {
   try {
-    console.log('im here');
-
     // Check if the new username is already taken
     const existingUser = await User.findOne({ username: req.params.username });
     if (existingUser) {
@@ -519,7 +516,6 @@ async function deleteUser(req, res) {
 
 async function getUserFollowersCount(req, res) {
   try {
-    console.log(req.params.id);
     // Find the user with the provided ID
     const user = await User.findById(req.params.id);
     // Check if user exists
@@ -529,14 +525,10 @@ async function getUserFollowersCount(req, res) {
     }
     // Send back the user's follower count
     res.json(user.followers.length);
-    console.log(req.params.id);
 
-    console.log(
-      user.followers.length,
-      'hjkfhkjdsfhjkdsjhkfsdhkjfhkjskjfhsdfhjkdshkjfdshjkfhjksfhjffhjksdfkjhdshkjfdshkhkjfdfshkjsdkjh'
-    );
+    
   } catch (error) {
-    console.log(`getUserFollowersCount Error: ${error}`);
+    console.error(`getUserFollowersCount Error: ${error}`);
     res.status(500).json({ error: error.message });
   }
 }
