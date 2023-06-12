@@ -259,23 +259,32 @@ async function changeUserPassword(req, res) {
 
 async function changeUsername(req, res) {
   try {
-    // Check if the new username is already taken
-    const existingUser = await User.findOne({ username: req.params.username });
-    if (existingUser) {
-      return res.status(409).json({ message: 'Username is already taken' });
+    //console.log(req.params.username);
+    const userExist = await User.findOne({ username: req.body.username });
+    if (userExist) {
+      return res.status(400).json({ message: 'Username already taken' });
+    } else {
+      const oldUser = await User.findById(req.user.id);
+      const oldUsername = oldUser.username;
+      await Post.updateMany(
+        { 'originalUser.username': oldUsername },
+        { $set: { 'originalUser.username': req.body.username } }
+      );
+
+      await Post.updateMany(
+        { 'sharingUser.username': oldUsername },
+        { $set: { 'sharingUser.username': req.body.username } }
+      );
+
+      await User.findByIdAndUpdate(
+        { _id: req.user.id },
+        { $set: { username: req.body.username } }
+      );
+      // Send back success message
+      return res.json({ message: 'username changed successfully' });
     }
-
-    // Find user by id and update his username
-    await User.findByIdAndUpdate(
-      { _id: req.user.id },
-      { $set: { username: req.params.username } }
-    );
-
-    // Send back success message
-    return res.json({ message: 'Username changed successfully' });
   } catch (error) {
     console.error(`change username Error: ${error}`);
-    res.status(500).json({ message: 'Server error' });
   }
 }
 
@@ -525,8 +534,6 @@ async function getUserFollowersCount(req, res) {
     }
     // Send back the user's follower count
     res.json(user.followers.length);
-
-    
   } catch (error) {
     console.error(`getUserFollowersCount Error: ${error}`);
     res.status(500).json({ error: error.message });
