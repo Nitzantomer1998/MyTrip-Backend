@@ -31,17 +31,17 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
-    "cloudinary": "^1.37.0",
+    "cloudinary": "^1.37.1",
     "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
+    "dotenv": "^16.1.4",
     "express": "^4.18.2",
     "express-fileupload": "^1.4.0",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^7.2.1"
+    "mongoose": "^7.2.3"
   },
   "devDependencies": {
     "depcheck": "^1.4.3",
-    "eslint": "^8.41.0",
+    "eslint": "^8.42.0",
     "eslint-config-google": "^0.14.0",
     "nodemon": "^2.0.22",
     "npm-check-updates": "^16.10.12"
