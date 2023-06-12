@@ -24,6 +24,8 @@ async function listImages(req, res) {
     res.json(userPosts);
   } catch (error) {
     console.error(`listImages Error: ${error.message}`);
+
+    res.status(400).json({ message: 'Error: Could not get images' });
   }
 }
 
