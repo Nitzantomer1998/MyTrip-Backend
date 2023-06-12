@@ -34,19 +34,22 @@ const router = express.Router();
 router.get('/getUserProfile/:username', userMiddleware, getUserProfile); // Get rid of "freindship", the return profile page contain all the user information = BAD!!!!
 router.get('/getUserSearchHistory', userMiddleware, getUserSearchHistory); // Finished
 router.get('/getFollowersPageInfos', userMiddleware, getFollowersPageInfos); // Finished
-router.get('/getFollowersPageInfosId/:id', userMiddleware, getFollowersPageInfosId); // Finished
+router.get(
+  '/getFollowersPageInfosId/:id',
+  userMiddleware,
+  getFollowersPageInfosId
+); // Finished
 
 router.get('/getUserFollowingPage/:id', userMiddleware, getUserFollowingPage); // Finished
 router.get('/getUserStatistics/:id', userMiddleware, getUserStatistics); // Will change alot in the future
-router.get('/getUserFollowersCount/:id', userMiddleware, getUserFollowersCount);// Finished
-
+router.get('/getUserFollowersCount/:id', userMiddleware, getUserFollowersCount); // Finished
 
 // Set up POST routes
 router.post('/registerUser', registerUser); // cancel sending back error messages
 router.post('/userLogin', userLogin); // cancel sending back error messages
 router.post('/searchUser/:username', userMiddleware, searchUser); // Finished
 router.post('/changeUserPassword', userMiddleware, changeUserPassword); // Finished
-router.post('/changeUsername/:username', userMiddleware, changeUsername); // Finished
+router.post('/changeUsername', userMiddleware, changeUsername); // Finished
 router.post('/shareUserPost/:postId/:userId', userMiddleware, shareUserPost); // Finished
 
 // Set up PUT routes
