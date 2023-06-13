@@ -1,4 +1,3 @@
-
 import User from '../models/userModel.js';
 import Post from '../models/postModel.js';
 
@@ -274,7 +273,6 @@ async function getAllPostsLiked(req, res) {
       .populate('comments.commentBy', 'username picture')
       .sort({ createdAt: -1 });
 
-
     res.status(200).json(likedPosts);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -298,7 +296,6 @@ async function getAllPostsRecommended(req, res) {
       .populate('user', 'username picture')
       .populate('comments.commentBy', 'username picture')
       .sort({ createdAt: -1 });
-
 
     // Renvoyer la liste des posts sauvegardés
     res.status(200).json(recommendedPosts);
@@ -465,7 +462,9 @@ async function updatePost(req, res) {
     } else {
       post.images = selectedImages;
     }
-
+    if (post.images && post.images.length === 0) {
+      post.images = null;
+    }
     post.location = location;
 
     //save the post
