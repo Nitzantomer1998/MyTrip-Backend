@@ -37,7 +37,7 @@ async function uploadImages(req, res) {
     // Upload images to cloudinary
     const imageUploadPromises = files.map(async (file) => {
       try {
-        const url = await uploadToCloudinary(file, req.body.path);
+        const url = await uploadToCloudinary(file, "MyTrip");
         removeUnAuthorizedImage(file.tempFilePath);
         return url;
       } catch (error) {
