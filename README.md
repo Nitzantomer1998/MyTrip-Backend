@@ -45,6 +45,7 @@
    </li>
   <li>
      Now your Backend server is activating and waiting for calls from the frontend.
+     <pre><code>https//:localhost:8000</code></pre>
    </li>
 </ol>
 
