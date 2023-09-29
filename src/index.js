@@ -30,13 +30,16 @@ fs.readdirSync('./src/routes').map(async (route) =>
 app.listen(process.env.PORT, () => console.log('Server Connected'));
 
 
-/////////////// Tricking The Hosting Website "Render" Followed By Faster Responses ///////////////
+// Tricking The Hosting Website "Render" Followed By Faster Responses
 import axios from 'axios';
 
 const keepServerAlive = async () => {
-  try { await axios.get('https://mytrip-backend-pc4j.onrender.com'); }
-  catch (error) { return; }
+  try {
+    await axios.get('https://mytrip-backend-pc4j.onrender.com');
+  } catch (error) {
+    return;
+  }
 };
 
 setInterval(keepServerAlive, 600000);
-/////////////// Tricking The Hosting Website "Render" Followed By Faster Responses ///////////////
+// Tricking The Hosting Website "Render" Followed By Faster Responses
