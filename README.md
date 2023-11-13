@@ -4,7 +4,7 @@
    It provides the necessary APIs and functionalities to support user profiles, posts, likes, comments, and much more.
 
    MyTrip is Your passport to unforgettable moments! Seamlessly share and cherish life's highlights with loved ones on this interactive platform. From stunning photo uploads to
-   captivating thoughts, connect with friends worldwide, making every memory a shared treasure. Embrace the journey with MyTrip, where your stories come to life! 🌎✨
+   captivating thoughts, connect with friends worldwide, making every memory a shared treasure. Embrace the journey with MyTrip, where your stories come to life!
 </p>
 
 <h2>Technology Stack</h2>
@@ -15,7 +15,6 @@
    <li>Node.js</li>
    <li>MongoDB</li>
    <li>Cloudinary</li>
-   <li>Render</li>
 </ul>
 
 <h2>Getting Started</h2>
