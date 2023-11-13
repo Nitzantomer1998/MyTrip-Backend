@@ -20,4 +20,4 @@ jobs:
         run: npm run linter
 
       - name: Deploy Service
-        run: curl "https://api.render.com/deploy/srv-ch009ljlbnoms4ugsn5g?key=${{ secrets.RENDER_API_KEY }}"
+        run: curl "https://api.render.com/deploy/srv-cl8uooqvokcc73b3uhgg?key=${{ secrets.RENDER_API_KEY }}"
